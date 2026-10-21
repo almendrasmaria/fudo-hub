@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Search, Sparkles } from "lucide-react";
+import { Search, Sparkles, Plus } from "lucide-react";
 import FilterChip from "@/src/components/ui/FilterChip";
+import Button from "@/src/components/ui/Button";
 import { Category } from "@/src/data/macros";
 
 export interface SearchHeroProps {
@@ -13,6 +14,7 @@ export interface SearchHeroProps {
   onSelectCategory: (categoryId: string) => void;
   totalCount: number;
   filteredCount: number;
+  onNewMacro?: () => void;
 }
 
 export default function SearchHero({
@@ -23,6 +25,7 @@ export default function SearchHero({
   onSelectCategory,
   totalCount,
   filteredCount,
+  onNewMacro,
 }: SearchHeroProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,25 +42,28 @@ export default function SearchHero({
 
   return (
     <div className="mb-8">
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div>
           <div className="flex items-center gap-1.5 text-[#ff5722] text-xs font-bold uppercase tracking-wider mb-1.5">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Biblioteca inteligente</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-[#172033] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#172033] tracking-tight">
             Respondé más rápido, ayudá mejor
           </h1>
         </div>
 
-        <div className="text-right">
-          <span className="text-3xl font-extrabold text-[#ff5722] leading-none block">
-            {totalCount}
-          </span>
-          <span className="text-[10px] font-bold text-[#697386] tracking-wider uppercase">
-            Macros activas
-          </span>
-        </div>
+        {onNewMacro && (
+          <Button
+            variant="primary"
+            size="md"
+            icon={Plus}
+            onClick={onNewMacro}
+            className="shadow-sm"
+          >
+            Nueva macro
+          </Button>
+        )}
       </div>
 
       <div className="relative mb-5 group">

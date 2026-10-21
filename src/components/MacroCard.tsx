@@ -164,7 +164,7 @@ export default function MacroCard({
             icon={copiedText ? Check : Copy}
             onClick={handleCopyText}
           >
-            {copiedText ? "¡Copiado!" : "Copiar texto"}
+            {copiedText ? "¡Copiado!" : "Copiar"}
           </Button>
         </div>
       </div>

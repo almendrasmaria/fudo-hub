@@ -9,6 +9,7 @@ export interface PaginationProps {
   totalItems: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
+  itemLabel?: string;
 }
 
 export default function Pagination({
@@ -17,19 +18,48 @@ export default function Pagination({
   totalItems,
   itemsPerPage,
   onPageChange,
+  itemLabel = "macros",
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages: (number | "dots")[] = [];
+
+    if (currentPage <= 4) {
+      for (let i = 1; i <= 5; i++) pages.push(i);
+      pages.push("dots");
+      pages.push(totalPages);
+    } else if (currentPage >= totalPages - 3) {
+      pages.push(1);
+      pages.push("dots");
+      for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      pages.push("dots");
+      pages.push(currentPage - 1);
+      pages.push(currentPage);
+      pages.push(currentPage + 1);
+      pages.push("dots");
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const pageNumbers = getPageNumbers();
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-[#e9e5de]">
       <p className="text-xs text-[#697386] font-medium">
         Mostrando <span className="font-bold text-[#172033]">{startItem}-{endItem}</span> de{" "}
-        <span className="font-bold text-[#172033]">{totalItems}</span> macros
+        <span className="font-bold text-[#172033]">{totalItems}</span> {itemLabel}
       </p>
 
       <div className="flex items-center gap-1.5">
@@ -43,7 +73,18 @@ export default function Pagination({
           <ChevronLeft className="w-4 h-4" />
         </button>
 
-        {pages.map((page) => {
+        {pageNumbers.map((page, idx) => {
+          if (page === "dots") {
+            return (
+              <span
+                key={`dots-${idx}`}
+                className="w-6 text-center text-xs text-[#697386] select-none"
+              >
+                ...
+              </span>
+            );
+          }
+
           const isActive = page === currentPage;
           return (
             <button
