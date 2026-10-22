@@ -8,7 +8,6 @@ import {
   ReceiptText,
   ExternalLink,
   AlertTriangle,
-  CheckCircle2,
   ArrowRightLeft,
   X,
   ChevronDown,
@@ -291,7 +290,7 @@ export default function FacturacionView() {
                         </span>
 
                         {/* Entity badge */}
-                        <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#E6F2FA] text-[#3674A9] border border-[#CDE3F5]">
+                        <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#E6F2FA] text-[#3674A9] border border-[#CDE3F5] dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/60">
                           {issue.entity}
                         </span>
 
@@ -304,8 +303,8 @@ export default function FacturacionView() {
 
                         {/* Slack Channel badge if available */}
                         {issue.derivationChannel && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
-                            <Hash className="w-3 h-3 text-indigo-600" />
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800/60">
+                            <Hash className="w-3 h-3 text-indigo-600 dark:text-indigo-300" />
                             <span>{issue.derivationChannel}</span>
                           </span>
                         )}
@@ -410,18 +409,18 @@ export default function FacturacionView() {
 
                     {/* Interactive Decision Tree / Flowchart Branching Widget */}
                     {issue.decisionTree && (
-                      <div className="rounded-2xl border-2 border-[#ffccba] bg-[#FFFBF8] p-4 shadow-2xs space-y-3.5">
-                        <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#E94817]">
-                          <GitFork className="w-4 h-4 text-[#ff5722]" />
+                      <div className="rounded-2xl border-2 border-[#ffccba] bg-[#FFFBF8] dark:bg-[#0f172a] dark:border-orange-500/35 p-4 shadow-2xs space-y-3.5">
+                        <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#E94817] dark:text-orange-400">
+                          <GitFork className="w-4 h-4 text-[#ff5722] dark:text-orange-400" />
                           <span>Flujo de Validación y Decisión (Protocolo Oficial)</span>
                         </div>
 
                         {/* Question Box */}
-                        <div className="bg-white p-3 rounded-xl border border-[#ffd7c5] shadow-2xs">
-                          <p className="text-xs font-bold text-[#697386] uppercase tracking-wider mb-1">
+                        <div className="bg-white dark:bg-[#151c28] p-3 rounded-xl border border-[#ffd7c5] dark:border-[#242f42] shadow-2xs">
+                          <p className="text-xs font-bold text-[#697386] dark:text-slate-400 uppercase tracking-wider mb-1">
                             Pregunta clave de diagnóstico:
                           </p>
-                          <p className="text-sm sm:text-base font-extrabold text-[#172033]">
+                          <p className="text-sm sm:text-base font-extrabold text-[#172033] dark:text-white">
                             {issue.decisionTree.question}
                           </p>
                         </div>
@@ -437,8 +436,8 @@ export default function FacturacionView() {
                                 onClick={() => setDecisionBranch(issue.id, branch.id)}
                                 className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${
                                   isBranchActive
-                                    ? "bg-white border-[#ff5722] shadow-sm ring-2 ring-[#ff5722]/20"
-                                    : "bg-white/70 border-slate-200 hover:border-slate-300 hover:bg-white text-slate-600"
+                                    ? "bg-white border-[#ff5722] shadow-sm ring-2 ring-[#ff5722]/20 dark:bg-[#151c28] dark:border-[#ff5722] dark:ring-[#ff5722]/30"
+                                    : "bg-white/70 border-slate-200 hover:border-slate-300 hover:bg-white text-slate-600 dark:bg-[#151c28]/60 dark:border-[#242f42] dark:hover:border-slate-600 dark:hover:bg-[#151c28] dark:text-slate-300"
                                 }`}
                               >
                                 <div className="flex items-center justify-between">
@@ -446,19 +445,19 @@ export default function FacturacionView() {
                                     className={`text-xs font-extrabold px-2 py-0.5 rounded-md ${
                                       isBranchActive
                                         ? "bg-[#ff5722] text-white"
-                                        : "bg-slate-100 text-slate-700"
+                                        : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                     }`}
                                   >
                                     {branch.label}
                                   </span>
                                   {isBranchActive && (
-                                    <span className="text-[11px] font-bold text-[#ff5722] flex items-center gap-1">
+                                    <span className="text-[11px] font-bold text-[#ff5722] dark:text-orange-400 flex items-center gap-1">
                                       <Check className="w-3.5 h-3.5" />
                                       <span>Activo</span>
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-xs font-medium text-[#172033] mt-2 line-clamp-2">
+                                <p className="text-xs font-medium text-[#172033] dark:text-slate-300 mt-2 line-clamp-2">
                                   {branch.summary}
                                 </p>
                               </button>
@@ -468,54 +467,32 @@ export default function FacturacionView() {
 
                         {/* Active Branch Workflow Details */}
                         {currentBranch && (
-                          <div className="bg-white rounded-xl p-3.5 border border-[#ffd7c5] space-y-3 animate-in fade-in duration-150">
+                          <div className="bg-white dark:bg-[#151c28] rounded-xl p-3.5 border border-[#ffd7c5] dark:border-[#242f42] space-y-3 animate-in fade-in duration-150">
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                              <span className="text-xs font-bold text-[#172033] flex items-center gap-1.5">
+                              <span className="text-xs font-bold text-[#172033] dark:text-slate-200 flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-[#ff5722]" />
-                                <span>Resolución para: <strong>{currentBranch.label}</strong></span>
+                                <span>Resolución para: <strong className="text-slate-900 dark:text-white">{currentBranch.label}</strong></span>
                               </span>
                               <span
                                 className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
                                   currentBranch.badgeType === "derivation"
-                                    ? "bg-[#FFF0E9] text-[#E94817] border border-[#FFD7C5]"
-                                    : "bg-[#E7F5EE] text-[#347F65] border border-[#CEEAD9]"
+                                    ? "bg-[#FFF0E9] text-[#E94817] border border-[#FFD7C5] dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800/60"
+                                    : "bg-[#E7F5EE] text-[#347F65] border border-[#CEEAD9] dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60"
                                 }`}
                               >
                                 {currentBranch.badgeText}
                               </span>
                             </div>
 
-                            <p className="text-xs text-[#172033] font-medium leading-relaxed">
+                            <p className="text-xs text-[#172033] dark:text-slate-300 font-medium leading-relaxed">
                               {currentBranch.summary}
                             </p>
 
                             {/* Sticky Note for renewal/escalation if present */}
                             {currentBranch.note && (
-                              <div className="p-3 rounded-xl bg-[#E0F7FA] border-l-4 border-[#00ACC1] text-xs text-[#006064] leading-relaxed font-medium">
+                              <div className="p-3 rounded-xl bg-[#E0F7FA] border-l-4 border-[#00ACC1] text-xs text-[#006064] leading-relaxed font-medium dark:bg-cyan-950/30 dark:border-cyan-500 dark:text-cyan-200">
                                 <p className="font-bold mb-0.5">📌 Nota importante:</p>
                                 {renderTextWithLinks(currentBranch.note)}
-                              </div>
-                            )}
-
-                            {/* Steps if present */}
-                            {currentBranch.steps && currentBranch.steps.length > 0 && (
-                              <div className="space-y-1.5 pt-1">
-                                <p className="text-xs font-bold text-[#697386] uppercase tracking-wider">
-                                  Pasos a seguir:
-                                </p>
-                                {currentBranch.steps.map((step, sIdx) => (
-                                  <div
-                                    key={sIdx}
-                                    className="flex items-start gap-2.5 text-xs text-[#172033] bg-[#FAF8F3] p-2.5 rounded-xl border border-[#e9e5de]"
-                                  >
-                                    <span className="w-5 h-5 rounded-full bg-[#ff5722] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
-                                      {sIdx + 1}
-                                    </span>
-                                    <span className="leading-relaxed pt-0.5">
-                                      {renderTextWithLinks(step)}
-                                    </span>
-                                  </div>
-                                ))}
                               </div>
                             )}
 
@@ -523,7 +500,7 @@ export default function FacturacionView() {
                             {currentBranch.clientMessage && (
                               <div className="pt-2">
                                 <div className="flex items-center justify-between mb-1.5">
-                                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#697386]">
+                                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#697386] dark:text-slate-400">
                                     Mensaje específico para esta opción:
                                   </span>
                                   <button
@@ -537,7 +514,7 @@ export default function FacturacionView() {
                                     className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
                                       copiedId === `${issue.id}-${currentBranch.id}`
                                         ? "bg-emerald-600 text-white"
-                                        : "bg-[#fff0e9] text-[#ff5722] hover:bg-[#ffd7c5]"
+                                        : "bg-[#fff0e9] text-[#ff5722] hover:bg-[#ffd7c5] dark:bg-orange-950/40 dark:text-orange-300 dark:hover:bg-orange-900/50"
                                     }`}
                                   >
                                     {copiedId === `${issue.id}-${currentBranch.id}` ? (
@@ -553,7 +530,7 @@ export default function FacturacionView() {
                                     )}
                                   </button>
                                 </div>
-                                <div className="p-2.5 rounded-lg bg-[#FAF8F3] border border-[#e9e5de] text-xs text-[#172033] leading-relaxed italic select-all">
+                                <div className="p-2.5 rounded-lg bg-[#FAF8F3] dark:bg-[#0c1017] border border-[#e9e5de] dark:border-[#242f42] text-xs text-[#172033] dark:text-slate-200 leading-relaxed italic select-all">
                                   &quot;{currentBranch.clientMessage}&quot;
                                 </div>
                               </div>
@@ -565,55 +542,32 @@ export default function FacturacionView() {
 
                     {/* Root Cause */}
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#697386] mb-1 flex items-center gap-1.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#697386] dark:text-slate-400 mb-1 flex items-center gap-1.5">
                         <HelpCircle className="w-3.5 h-3.5 text-[#ff5722]" />
                         <span>Causa raíz y diagnóstico</span>
                       </h4>
-                      <p className="text-xs sm:text-sm text-[#172033] leading-relaxed">
+                      <p className="text-xs sm:text-sm text-[#172033] dark:text-slate-200 leading-relaxed">
                         {issue.rootCause}
                       </p>
                     </div>
 
-                    {/* Standard Solution Steps (if not using decisionTree or as backup summary) */}
-                    <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#697386] mb-2 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                        <span>Solución paso a paso</span>
-                      </h4>
-                      <div className="space-y-1.5">
-                        {issue.solutionSteps.map((step, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-start gap-2.5 text-xs text-[#172033] bg-white p-2.5 rounded-xl border border-[#e9e5de]/70 shadow-2xs"
-                          >
-                            <span className="w-5 h-5 rounded-full bg-[#FAF8F3] border border-[#e9e5de] text-[11px] font-bold text-[#ff5722] flex items-center justify-center shrink-0">
-                              {idx + 1}
-                            </span>
-                            <span className="leading-relaxed pt-0.5">
-                              {renderTextWithLinks(step)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
                     {/* Critical Sticky Warning Note */}
                     {issue.warningNote && (
-                      <div className="p-3.5 rounded-xl bg-[#E0F7FA] border-2 border-[#00BCD4] shadow-2xs space-y-1 text-xs text-[#006064]">
-                        <div className="flex items-center gap-1.5 font-extrabold uppercase tracking-wider text-[#00838F]">
-                          <AlertTriangle className="w-4 h-4 text-[#00ACC1]" />
+                      <div className="p-3.5 rounded-xl bg-[#E0F7FA] border-2 border-[#00BCD4] shadow-2xs space-y-1 text-xs text-[#006064] dark:bg-cyan-950/30 dark:border-cyan-500 dark:text-cyan-200">
+                        <div className="flex items-center gap-1.5 font-extrabold uppercase tracking-wider text-[#00838F] dark:text-cyan-400">
+                          <AlertTriangle className="w-4 h-4 text-[#00ACC1] dark:text-cyan-400" />
                           <span>Nota Oficial del Protocolo:</span>
                         </div>
-                        <p className="font-bold leading-relaxed">
+                        <p className="font-bold leading-relaxed text-[#006064] dark:text-cyan-200">
                           {renderTextWithLinks(issue.warningNote)}
                         </p>
                       </div>
                     )}
 
                     {/* Client Ready Message */}
-                    <div className="bg-white rounded-xl border border-[#e9e5de] p-3.5 shadow-2xs space-y-2">
+                    <div className="bg-white dark:bg-[#151c28] rounded-xl border border-[#e9e5de] dark:border-[#242f42] p-3.5 shadow-2xs space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#172033] flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-[#172033] dark:text-slate-200 flex items-center gap-1.5">
                           <FileText className="w-3.5 h-3.5 text-[#ff5722]" />
                           <span>Respuesta sugerida para enviar al cliente</span>
                         </span>
@@ -624,7 +578,7 @@ export default function FacturacionView() {
                           className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer ${
                             isCopied
                               ? "bg-emerald-600 text-white shadow-2xs"
-                              : "bg-[#fff0e9] text-[#ff5722] hover:bg-[#ffd7c5] shadow-2xs"
+                              : "bg-[#fff0e9] text-[#ff5722] hover:bg-[#ffd7c5] dark:bg-orange-950/40 dark:text-orange-300 dark:hover:bg-orange-900/50 shadow-2xs"
                           }`}
                         >
                           {isCopied ? (
@@ -641,7 +595,7 @@ export default function FacturacionView() {
                         </button>
                       </div>
 
-                      <div className="p-3 rounded-lg bg-[#FAF8F3] border border-[#e9e5de]/60 text-xs text-[#172033] leading-relaxed italic select-all">
+                      <div className="p-3 rounded-lg bg-[#FAF8F3] dark:bg-[#0c1017] border border-[#e9e5de]/60 dark:border-[#242f42] text-xs text-[#172033] dark:text-slate-200 leading-relaxed italic select-all">
                         &quot;{issue.clientMessage}&quot;
                       </div>
                     </div>

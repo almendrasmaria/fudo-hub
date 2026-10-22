@@ -16,10 +16,14 @@ import {
 
 export default function DerivacionesView() {
   const badgeStyles: Record<string, string> = {
-    purple: "bg-[#F0EAFB] text-[#7357AA] border-[#E1D5F5]",
-    emerald: "bg-[#E7F5EE] text-[#347F65] border-[#CEEAD9]",
-    sky: "bg-[#E6F2FA] text-[#3674A9] border-[#CDE3F5]",
-    orange: "bg-[#FFF0E9] text-[#E94817] border-[#FFD7C5]",
+    purple:
+      "bg-[#F0EAFB] text-[#7357AA] border-[#E1D5F5] dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800/60",
+    emerald:
+      "bg-[#E7F5EE] text-[#347F65] border-[#CEEAD9] dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60",
+    sky:
+      "bg-[#E6F2FA] text-[#3674A9] border-[#CDE3F5] dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/60",
+    orange:
+      "bg-[#FFF0E9] text-[#E94817] border-[#FFD7C5] dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800/60",
   };
 
   return (
@@ -116,7 +120,9 @@ export default function DerivacionesView() {
                 Ejecutivos Comerciales
               </h3>
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border bg-[#F0EAFB] text-[#7357AA] border-[#E1D5F5]">
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${badgeStyles.purple}`}
+            >
               Flujo reutilizable
             </span>
           </div>
@@ -165,7 +171,9 @@ export default function DerivacionesView() {
               <h3 className="text-base font-bold text-[#172033]">
                 Comercial Chile (Squads)
               </h3>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border bg-[#E7F5EE] text-[#347F65] border-[#CEEAD9]">
+              <span
+                className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${badgeStyles.emerald}`}
+              >
                 Cambio de Inbox
               </span>
             </div>
@@ -193,8 +201,8 @@ export default function DerivacionesView() {
             ))}
           </div>
 
-          <div className="p-2.5 rounded-xl bg-purple-50/70 border border-purple-100 text-[11px] text-purple-900 leading-relaxed shadow-2xs">
-            <strong>Fuera de horario:</strong> Crear Folio y cambiar el <strong>inbox del folio</strong> según el squad correspondiente.
+          <div className="p-2.5 rounded-xl bg-purple-50/70 border border-purple-100 text-[11px] text-purple-900 leading-relaxed shadow-2xs dark:bg-purple-950/30 dark:border-purple-900/50 dark:text-purple-200">
+            <strong className="dark:text-white">Fuera de horario:</strong> Crear Folio y cambiar el <strong className="dark:text-white">inbox del folio</strong> según el squad correspondiente.
           </div>
         </div>
       </div>

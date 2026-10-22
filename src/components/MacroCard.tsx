@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import {
   Copy,
   Check,
-  Star,
   Clock,
   Pencil,
   Image as ImageIcon,
+  Users,
+  Trash2,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
 import Badge from "@/src/components/ui/Badge";
@@ -15,14 +16,14 @@ import { Macro } from "@/src/data/macros";
 
 export interface MacroCardProps {
   macro: Macro;
-  onToggleFavorite?: (macroId: string) => void;
   onEdit?: (macro: Macro) => void;
+  onDelete?: (macroId: string) => void;
 }
 
 export default function MacroCard({
   macro,
-  onToggleFavorite,
   onEdit,
+  onDelete,
 }: MacroCardProps) {
   const [copiedText, setCopiedText] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
@@ -62,23 +63,31 @@ export default function MacroCard({
     <div className="bg-white rounded-2xl border border-[#e9e5de] hover:border-[#dcd6cc] shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between p-5 group">
       <div>
         <div className="flex items-center justify-between mb-3">
-          <Badge variant={macro.category}>
-            {macro.categoryLabel}
-          </Badge>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant={macro.category}>
+              {macro.categoryLabel}
+            </Badge>
 
-          <button
-            onClick={() => onToggleFavorite && onToggleFavorite(macro.id)}
-            className="p-1 rounded-lg text-slate-300 hover:text-[#F5A524] transition-colors cursor-pointer"
-            title={macro.isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
-          >
-            <Star
-              className={`w-4 h-4 transition-transform active:scale-125 ${
-                macro.isFavorite
-                  ? "fill-[#F5A524] text-[#F5A524]"
-                  : "text-slate-300 hover:text-[#F5A524]"
-              }`}
-            />
-          </button>
+            {macro.shareStatus === "pending" && (
+              <span
+                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60"
+                title="Enviada al Administrador para revisión"
+              >
+                <Clock className="w-3 h-3 text-amber-600 dark:text-amber-300 shrink-0" />
+                <span>En revisión</span>
+              </span>
+            )}
+
+            {macro.shareStatus === "approved" && (
+              <span
+                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800/60"
+                title="Aprobada y visible para todo el equipo"
+              >
+                <Users className="w-3 h-3 text-purple-600 dark:text-purple-300 shrink-0" />
+                <span>Equipo</span>
+              </span>
+            )}
+          </div>
         </div>
 
         <h3 className="text-base font-bold text-[#172033] mb-2 group-hover:text-[#ff5722] transition-colors line-clamp-2">
@@ -90,33 +99,43 @@ export default function MacroCard({
         </p>
 
         {macro.image && (
-          <div className="mb-4 rounded-xl border border-[#e9e5de] bg-[#FAF9F5] overflow-hidden">
-            <div className="p-3 bg-gradient-to-b from-[#F3EFE6] to-[#FAF8F3] border-b border-[#e9e5de] flex items-center gap-3">
-              <div className="w-12 h-14 bg-[#172033] rounded-lg p-1.5 flex flex-col justify-between shrink-0 shadow-2xs">
-                <div className="w-2.5 h-2.5 rounded-xs bg-[#ff5722]" />
-                <div className="space-y-1">
-                  <div className="w-7 h-0.5 bg-slate-600 rounded-full" />
-                  <div className="w-5 h-0.5 bg-slate-600 rounded-full" />
-                  <div className="w-6 h-0.5 bg-slate-600 rounded-full" />
-                </div>
+          <div className="mb-4 rounded-xl border border-[#e9e5de] dark:border-[#242f42] bg-[#FAF9F5] dark:bg-[#0f1520] overflow-hidden">
+            {macro.image.url ? (
+              <div className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img">
+                <img
+                  src={macro.image.url}
+                  alt={macro.image.name}
+                  className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
+                />
               </div>
-
-              <div className="flex-1 space-y-2 py-0.5">
-                <div className="flex items-center justify-between">
-                  <div className="w-24 h-1.5 bg-[#172033]/80 rounded-full" />
-                  <div className="w-2 h-2 rounded-full bg-[#FFD052]" />
-                </div>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <div className="h-4 rounded border border-[#ff5722]/40 bg-white shadow-2xs flex items-center px-1">
-                    <div className="w-10 h-0.5 bg-[#ff5722] rounded-full" />
+            ) : (
+              <div className="p-3 bg-gradient-to-b from-[#F3EFE6] to-[#FAF8F3] dark:from-[#151c28] dark:to-[#0f1520] border-b border-[#e9e5de] dark:border-[#242f42] flex items-center gap-3">
+                <div className="w-12 h-14 bg-[#172033] rounded-lg p-1.5 flex flex-col justify-between shrink-0 shadow-2xs">
+                  <div className="w-2.5 h-2.5 rounded-xs bg-[#ff5722]" />
+                  <div className="space-y-1">
+                    <div className="w-7 h-0.5 bg-slate-600 rounded-full" />
+                    <div className="w-5 h-0.5 bg-slate-600 rounded-full" />
+                    <div className="w-6 h-0.5 bg-slate-600 rounded-full" />
                   </div>
-                  <div className="h-4 rounded border border-[#e9e5de] bg-white shadow-2xs" />
                 </div>
-                <div className="h-3 rounded border border-[#e9e5de] bg-white" />
-              </div>
-            </div>
 
-            <div className="px-3 py-2 bg-white flex items-center justify-between text-[11px] text-[#697386]">
+                <div className="flex-1 space-y-2 py-0.5">
+                  <div className="flex items-center justify-between">
+                    <div className="w-24 h-1.5 bg-[#172033]/80 rounded-full" />
+                    <div className="w-2 h-2 rounded-full bg-[#FFD052]" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div className="h-4 rounded border border-[#ff5722]/40 bg-white shadow-2xs flex items-center px-1">
+                      <div className="w-10 h-0.5 bg-[#ff5722] rounded-full" />
+                    </div>
+                    <div className="h-4 rounded border border-[#e9e5de] bg-white shadow-2xs" />
+                  </div>
+                  <div className="h-3 rounded border border-[#e9e5de] bg-white" />
+                </div>
+              </div>
+            )}
+
+            <div className="px-3 py-2 bg-white dark:bg-[#151c28] flex items-center justify-between text-[11px] text-[#697386] dark:text-slate-400">
               <div className="flex items-center gap-1.5 truncate pr-2">
                 <ImageIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span className="truncate">{macro.image.name}</span>
@@ -142,13 +161,30 @@ export default function MacroCard({
         )}
       </div>
 
-      <div className="pt-3 border-t border-[#f0ece5] flex items-center justify-between">
-        <div className="flex items-center gap-1 text-[11px] text-[#697386]">
+      <div className="pt-3 border-t border-[#f0ece5] dark:border-[#242f42] flex items-center justify-between">
+        <div className="flex items-center gap-1 text-[11px] text-[#697386] dark:text-slate-400">
           <Clock className="w-3 h-3" />
           <span>Actualizado {macro.updatedAt}</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={Trash2}
+              onClick={() => {
+                if (window.confirm(`¿Estás seguro de que deseás eliminar la macro "${macro.title}"?`)) {
+                  onDelete(macro.id);
+                }
+              }}
+              className="text-slate-400 hover:text-red-600 hover:bg-red-50/60 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-950/30"
+              title="Eliminar macro"
+            >
+              Eliminar
+            </Button>
+          )}
+
           <Button
             variant="ghost"
             size="sm"

@@ -83,13 +83,6 @@ export default function Home() {
     setCurrentPage(1);
   };
 
-  const handleToggleFavorite = (macroId: string) => {
-    setMacros((prev) =>
-      prev.map((m) =>
-        m.id === macroId ? { ...m, isFavorite: !m.isFavorite } : m
-      )
-    );
-  };
 
   const handleNewMacro = () => {
     setEditingMacro(null);
@@ -109,6 +102,14 @@ export default function Home() {
     } else {
       setMacros((prev) => [macroToSave, ...prev]);
       setCurrentPage(1);
+    }
+  };
+
+  const handleDeleteMacro = (macroId: string) => {
+    setMacros((prev) => prev.filter((m) => m.id !== macroId));
+    if (editingMacro?.id === macroId) {
+      setIsModalOpen(false);
+      setEditingMacro(null);
     }
   };
 
@@ -167,8 +168,8 @@ export default function Home() {
                         <MacroCard
                           key={macro.id}
                           macro={macro}
-                          onToggleFavorite={handleToggleFavorite}
                           onEdit={handleEdit}
+                          onDelete={handleDeleteMacro}
                         />
                       ))}
                     </div>
@@ -215,6 +216,7 @@ export default function Home() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveMacro}
+        onDelete={handleDeleteMacro}
         initialData={editingMacro}
         categories={categories}
       />

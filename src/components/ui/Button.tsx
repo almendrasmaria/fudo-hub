@@ -29,13 +29,13 @@ export default function Button({
     primary:
       "bg-[#ff5722] hover:bg-[#e94817] text-white shadow-sm shadow-orange-500/20 active:scale-98",
     secondary:
-      "bg-white border border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] shadow-2xs active:scale-98",
+      "bg-white border border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] shadow-2xs active:scale-98 dark:bg-[#151c28] dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637] dark:hover:text-white",
     ghost:
-      "bg-transparent text-[#697386] hover:text-[#172033] hover:bg-[#FAF8F3] active:scale-98",
+      "bg-transparent text-[#697386] hover:text-[#172033] hover:bg-[#FAF8F3] active:scale-98 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#1c2637]",
     success:
       "bg-[#3CAD75] text-white shadow-xs shadow-emerald-500/20 active:scale-98",
     outline:
-      "bg-transparent border border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] active:scale-98",
+      "bg-transparent border border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] active:scale-98 dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637] dark:hover:text-white",
   };
 
   const sizes: Record<ButtonSize, string> = {

@@ -7,8 +7,11 @@ export interface Category {
 export interface MacroImage {
   name: string;
   url?: string;
+  size?: string;
   previewType?: "caja" | "factura" | "carta" | "impresora" | string;
 }
+
+export type MacroShareStatus = "private" | "pending" | "approved";
 
 export interface Macro {
   id: string;
@@ -19,7 +22,9 @@ export interface Macro {
   text: string;
   image?: MacroImage;
   updatedAt: string;
-  isFavorite: boolean;
+  isFavorite?: boolean;
+  isShared?: boolean;
+  shareStatus?: MacroShareStatus;
 }
 
 export const categories: Category[] = [
@@ -45,6 +50,8 @@ export const initialMacros: Macro[] = [
     },
     updatedAt: "hace 2 días",
     isFavorite: true,
+    isShared: true,
+    shareStatus: "approved",
   },
   {
     id: "macro-2",
@@ -60,6 +67,8 @@ export const initialMacros: Macro[] = [
     },
     updatedAt: "ayer",
     isFavorite: false,
+    isShared: true,
+    shareStatus: "approved",
   },
   {
     id: "macro-3",
@@ -75,6 +84,8 @@ export const initialMacros: Macro[] = [
     },
     updatedAt: "hace 3 horas",
     isFavorite: false,
+    isShared: true,
+    shareStatus: "pending",
   },
   {
     id: "macro-4",

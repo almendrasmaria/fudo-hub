@@ -157,23 +157,23 @@ export default function IntegracionesView({ onGoToDerivaciones }: IntegracionesV
     if (!solution.derivation) return null;
     if (solution.derivation === "si") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border bg-orange-50 text-orange-700 border-orange-200">
-          <Send className="w-3 h-3 rotate-45 text-orange-600" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800/60">
+          <Send className="w-3 h-3 rotate-45 text-orange-600 dark:text-orange-300" />
           <span>{solution.derivationLabel}</span>
         </span>
       );
     }
     if (solution.derivation === "no") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border bg-emerald-50 text-emerald-700 border-emerald-200">
-          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60">
+          <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-300" />
           <span>{solution.derivationLabel}</span>
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border bg-amber-50 text-amber-800 border-amber-200">
-        <Send className="w-3 h-3 text-amber-600" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60">
+        <Send className="w-3 h-3 text-amber-600 dark:text-amber-300" />
         <span>{solution.derivationLabel}</span>
       </span>
     );
@@ -312,7 +312,7 @@ export default function IntegracionesView({ onGoToDerivaciones }: IntegracionesV
                           />
                           <span>{platform.name}</span>
                         </span>
-                        <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#E6F2FA] text-[#3674A9] border border-[#CDE3F5]">
+                        <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#E6F2FA] text-[#3674A9] border border-[#CDE3F5] dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/60">
                           {issue.categoryLabel}
                         </span>
                         {solution.scenario && (
