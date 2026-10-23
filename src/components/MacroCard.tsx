@@ -9,6 +9,8 @@ import {
   Image as ImageIcon,
   Users,
   Trash2,
+  ExternalLink,
+  FileText,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
 import Badge from "@/src/components/ui/Badge";
@@ -18,15 +20,42 @@ export interface MacroCardProps {
   macro: Macro;
   onEdit?: (macro: Macro) => void;
   onDelete?: (macroId: string) => void;
+  onGoToFacturacion?: (country?: string) => void;
 }
+
+const countryBadges: Record<string, { flag: string; label: string; className: string }> = {
+  argentina: {
+    flag: "🇦🇷",
+    label: "ARCA",
+    className: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/60",
+  },
+  chile: {
+    flag: "🇨🇱",
+    label: "SII",
+    className: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60",
+  },
+  colombia: {
+    flag: "🇨🇴",
+    label: "DIAN",
+    className: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60",
+  },
+  mexico: {
+    flag: "🇲🇽",
+    label: "SAT",
+    className: "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60",
+  },
+};
 
 export default function MacroCard({
   macro,
   onEdit,
   onDelete,
+  onGoToFacturacion,
 }: MacroCardProps) {
   const [copiedText, setCopiedText] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
+
+  const isFacturacion = macro.category === "facturacion";
 
   const handleCopyText = async () => {
     try {
@@ -60,13 +89,31 @@ export default function MacroCard({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#e9e5de] hover:border-[#dcd6cc] shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between p-5 group">
+    <div className="bg-white dark:bg-[#151c28] rounded-2xl border border-[#e9e5de] dark:border-[#242f42] hover:border-[#dcd6cc] dark:hover:border-slate-700 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between p-5 group">
       <div>
-        <div className="flex items-center justify-between mb-3">
+        {/* Card Header */}
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant={macro.category}>
               {macro.categoryLabel}
             </Badge>
+
+            {macro.country && countryBadges[macro.country] && (
+              <span
+                className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border ${countryBadges[macro.country].className}`}
+                title={`País: ${macro.country.toUpperCase()}`}
+              >
+                <span>{countryBadges[macro.country].flag}</span>
+                <span>{countryBadges[macro.country].label}</span>
+              </span>
+            )}
+
+            {/* Error Code Pill for Facturacion */}
+            {isFacturacion && macro.errorCode && (
+              <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-md bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60">
+                {macro.errorCode}
+              </span>
+            )}
 
             {macro.shareStatus === "pending" && (
               <span
@@ -88,52 +135,65 @@ export default function MacroCard({
               </span>
             )}
           </div>
+
+          {isFacturacion && onGoToFacturacion && (
+            <button
+              type="button"
+              onClick={() => onGoToFacturacion(macro.country)}
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#ff5722] hover:underline cursor-pointer"
+              title="Abrir protocolo oficial y árbol de decisión en Facturación"
+            >
+              <span>Ver en Facturación</span>
+              <ExternalLink className="w-3 h-3" />
+            </button>
+          )}
         </div>
 
-        <h3 className="text-base font-bold text-[#172033] mb-2 group-hover:text-[#ff5722] transition-colors line-clamp-2">
-          {macro.title}
+        {/* Card Title */}
+        <h3
+          className={`text-base font-bold text-[#172033] dark:text-white mb-2.5 group-hover:text-[#ff5722] transition-colors ${
+            isFacturacion ? "font-extrabold tracking-tight" : ""
+          }`}
+        >
+          {isFacturacion && macro.errorSnippet ? macro.errorSnippet : macro.title}
         </h3>
 
-        <p className="text-xs text-[#697386] leading-relaxed mb-4 whitespace-pre-line font-normal">
-          {macro.text}
-        </p>
+        {/* FACTURACIÓN SPECIFIC LAYOUT */}
+        {isFacturacion ? (
+          <div className="space-y-3 mb-4">
+            {/* Suggested Client Response Container */}
+            <div className="bg-[#FAF9F5] dark:bg-[#0f1520] rounded-xl border border-[#e9e5de] dark:border-[#242f42] p-3.5 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-[#ff5722] dark:text-orange-400">
+                  <FileText className="w-3.5 h-3.5 text-[#ff5722]" />
+                  <span>Respuesta para el cliente</span>
+                </span>
+                <span className="text-[10px] font-semibold text-[#697386] dark:text-slate-400 uppercase tracking-wider">
+                  Soporte
+                </span>
+              </div>
+              <p className="text-xs text-[#172033] dark:text-slate-200 leading-relaxed whitespace-pre-line font-normal">
+                {macro.text}
+              </p>
+            </div>
+          </div>
+        ) : (
+          /* REGULAR MACROS LAYOUT (Arqueos, Carta digital, Configuración) */
+          <p className="text-xs text-[#697386] dark:text-slate-300 leading-relaxed mb-4 whitespace-pre-line font-normal">
+            {macro.text}
+          </p>
+        )}
 
-        {macro.image && (
+        {/* Real Image Preview (ONLY when macro.image?.url exists) */}
+        {macro.image?.url && (
           <div className="mb-4 rounded-xl border border-[#e9e5de] dark:border-[#242f42] bg-[#FAF9F5] dark:bg-[#0f1520] overflow-hidden">
-            {macro.image.url ? (
-              <div className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img">
-                <img
-                  src={macro.image.url}
-                  alt={macro.image.name}
-                  className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
-                />
-              </div>
-            ) : (
-              <div className="p-3 bg-gradient-to-b from-[#F3EFE6] to-[#FAF8F3] dark:from-[#151c28] dark:to-[#0f1520] border-b border-[#e9e5de] dark:border-[#242f42] flex items-center gap-3">
-                <div className="w-12 h-14 bg-[#172033] rounded-lg p-1.5 flex flex-col justify-between shrink-0 shadow-2xs">
-                  <div className="w-2.5 h-2.5 rounded-xs bg-[#ff5722]" />
-                  <div className="space-y-1">
-                    <div className="w-7 h-0.5 bg-slate-600 rounded-full" />
-                    <div className="w-5 h-0.5 bg-slate-600 rounded-full" />
-                    <div className="w-6 h-0.5 bg-slate-600 rounded-full" />
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-2 py-0.5">
-                  <div className="flex items-center justify-between">
-                    <div className="w-24 h-1.5 bg-[#172033]/80 rounded-full" />
-                    <div className="w-2 h-2 rounded-full bg-[#FFD052]" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <div className="h-4 rounded border border-[#ff5722]/40 bg-white shadow-2xs flex items-center px-1">
-                      <div className="w-10 h-0.5 bg-[#ff5722] rounded-full" />
-                    </div>
-                    <div className="h-4 rounded border border-[#e9e5de] bg-white shadow-2xs" />
-                  </div>
-                  <div className="h-3 rounded border border-[#e9e5de] bg-white" />
-                </div>
-              </div>
-            )}
+            <div className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img">
+              <img
+                src={macro.image.url}
+                alt={macro.image.name || "Captura"}
+                className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
+              />
+            </div>
 
             <div className="px-3 py-2 bg-white dark:bg-[#151c28] flex items-center justify-between text-[11px] text-[#697386] dark:text-slate-400">
               <div className="flex items-center gap-1.5 truncate pr-2">
@@ -161,6 +221,7 @@ export default function MacroCard({
         )}
       </div>
 
+      {/* Card Footer */}
       <div className="pt-3 border-t border-[#f0ece5] dark:border-[#242f42] flex items-center justify-between">
         <div className="flex items-center gap-1 text-[11px] text-[#697386] dark:text-slate-400">
           <Clock className="w-3 h-3" />

@@ -62,7 +62,7 @@ export default function Sidebar({
           <img
             src="/logo.png"
             alt="Fudo Macros"
-            className="h-14 w-auto object-contain dark:bg-white/90 dark:p-1.5 dark:rounded-xl transition-all"
+            className="h-14 w-auto object-contain"
           />
         </div>
 

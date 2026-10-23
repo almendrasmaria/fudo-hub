@@ -21,6 +21,7 @@ export default function Home() {
   const [activeView, setActiveView] = useState<"macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion">("facturacion");
   const [macros, setMacros] = useState<Macro[]>(initialMacros);
   const [selectedCategory, setSelectedCategory] = useState<string>("todas");
+  const [selectedCountry, setSelectedCountry] = useState<string>("todos");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -49,21 +50,39 @@ export default function Home() {
     return counts;
   }, [macros]);
 
+  const countryCounts = useMemo(() => {
+    const facturacionMacros = macros.filter((m) => m.category === "facturacion");
+    return {
+      todos: facturacionMacros.length,
+      argentina: facturacionMacros.filter((m) => m.country === "argentina").length,
+      chile: facturacionMacros.filter((m) => m.country === "chile").length,
+      colombia: facturacionMacros.filter((m) => m.country === "colombia").length,
+      mexico: facturacionMacros.filter((m) => m.country === "mexico").length,
+    };
+  }, [macros]);
+
   const filteredMacros = useMemo(() => {
     return macros.filter((macro) => {
       const matchesCategory =
         selectedCategory === "todas" || macro.category === selectedCategory;
 
+      const matchesCountry =
+        selectedCategory !== "facturacion" ||
+        selectedCountry === "todos" ||
+        macro.country === selectedCountry;
+
       const query = searchQuery.trim().toLowerCase();
       const matchesSearch =
         query === "" ||
         macro.title.toLowerCase().includes(query) ||
+        (macro.errorSnippet && macro.errorSnippet.toLowerCase().includes(query)) ||
         macro.text.toLowerCase().includes(query) ||
-        macro.categoryLabel.toLowerCase().includes(query);
+        macro.categoryLabel.toLowerCase().includes(query) ||
+        (macro.country && macro.country.toLowerCase().includes(query));
 
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesCountry && matchesSearch;
     });
-  }, [macros, selectedCategory, searchQuery]);
+  }, [macros, selectedCategory, selectedCountry, searchQuery]);
 
   const totalPages = Math.ceil(filteredMacros.length / ITEMS_PER_PAGE);
 
@@ -74,6 +93,7 @@ export default function Home() {
 
   const handleSelectCategory = (categoryId: string) => {
     setSelectedCategory(categoryId);
+    setSelectedCountry("todos");
     setActiveView("macros");
     setCurrentPage(1);
   };
@@ -159,6 +179,12 @@ export default function Home() {
                   totalCount={macros.length}
                   filteredCount={filteredMacros.length}
                   onNewMacro={handleNewMacro}
+                  selectedCountry={selectedCountry}
+                  onSelectCountry={(c) => {
+                    setSelectedCountry(c);
+                    setCurrentPage(1);
+                  }}
+                  countryCounts={countryCounts}
                 />
 
                 {filteredMacros.length > 0 ? (
@@ -170,6 +196,7 @@ export default function Home() {
                           macro={macro}
                           onEdit={handleEdit}
                           onDelete={handleDeleteMacro}
+                          onGoToFacturacion={() => setActiveView("facturacion")}
                         />
                       ))}
                     </div>

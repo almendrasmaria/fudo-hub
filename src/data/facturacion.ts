@@ -124,7 +124,8 @@ export const invoiceIssues: InvoiceIssue[] = [
     countryId: "argentina",
     entity: "ARCA",
     category: "folios_puntos",
-    title: "No autorizado a emitir comprobantes - Punto de venta debe ser tipo RECE",
+    errorCode: "ERROR AFIP000",
+    title: "ERROR AFIP000: No autorizado a emitir comprobantes - Punto de venta debe ser tipo RECE",
     errorSnippet: "NO AUTORIZADO A EMITIR COMPROBANTES - EL PUNTO DE VENTA INFORMADO DEBE ESTAR DADO DE ALTA Y SER DEL TIPO RECE",
     rootCause: "Este error ocurre porque el cliente se recategorizó en ARCA y el Punto de Venta anterior quedó deshabilitado o no está configurado bajo la modalidad requerida para Web Services.",
     solutionSteps: [
@@ -144,7 +145,8 @@ export const invoiceIssues: InvoiceIssue[] = [
     countryId: "argentina",
     entity: "ARCA",
     category: "validacion_cliente",
-    title: "No autorizado a emitir comprobantes - Inconvenientes en el domicilio fiscal",
+    errorCode: "ERROR AFIP000",
+    title: "ERROR AFIP000: No autorizado a emitir comprobantes - Inconvenientes en el domicilio fiscal",
     errorSnippet: "NO AUTORIZADO A EMITIR COMPROBANTES - LA CUIT INFORMADA REGISTRA INCONVENIENTES EN EL DOMICILIO FISCAL",
     rootCause: "ARCA tiene registrada una observación, requerimiento pendiente o traba en el Domicilio Fiscal Electrónico (DFE) del contribuyente, bloqueando la autorización de comprobantes con CAE.",
     solutionSteps: [
@@ -182,7 +184,8 @@ export const invoiceIssues: InvoiceIssue[] = [
     countryId: "argentina",
     entity: "ARCA",
     category: "validacion_cliente",
-    title: "No autorizado a emitir comprobantes - CUIT no autorizada a comprobantes Clase 'A'",
+    errorCode: "ERROR AFIP000",
+    title: "ERROR AFIP000: No autorizado a emitir comprobantes - CUIT no autorizada a comprobantes Clase 'A'",
     errorSnippet: "NO AUTORIZADO A EMITIR COMPROBANTES - LA CUIT INFORMADA NO SE ENCUENTRA AUTORIZADA A EMITIR COMPROBANTES CLASE 'A'",
     rootCause: "La CUIT del emisor no cuenta con la habilitación en ARCA para emitir facturas Clase A (falta de acreditación de solvencia patrimonial, CBU declarada o cumplimiento de la RG 1575), o pasó a Responsable Inscripto sin completar el trámite de habilitación.",
     solutionSteps: [
@@ -200,7 +203,8 @@ export const invoiceIssues: InvoiceIssue[] = [
     countryId: "argentina",
     entity: "ARCA",
     category: "validacion_cliente",
-    title: "No autorizado a emitir comprobantes - CUIT no corresponde a Responsables Monotributo",
+    errorCode: "ERROR AFIP000",
+    title: "ERROR AFIP000: No autorizado a emitir comprobantes - CUIT no corresponde a Responsables Monotributo",
     errorSnippet: "NO AUTORIZADO A EMITIR COMPROBANTES - LA CUIT INFORMADA NO CORRESPONDE A RESPONSABLES MONOTRIBUTO",
     rootCause: "La condición fiscal del contribuyente ante ARCA no coincide con el Monotributo configurado en Fudo (por ejemplo: baja automática por falta de pago, exclusión de pleno derecho o recategorización al Régimen General).",
     solutionSteps: [

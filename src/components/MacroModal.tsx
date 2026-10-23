@@ -13,7 +13,7 @@ import {
   Check,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
-import { Macro, Category, MacroImage } from "@/src/data/macros";
+import { Macro, Category, MacroImage, MacroCountry } from "@/src/data/macros";
 
 export interface MacroModalProps {
   isOpen: boolean;
@@ -41,6 +41,7 @@ export default function MacroModal({
 }: MacroModalProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("arqueos");
+  const [country, setCountry] = useState<MacroCountry>("general");
   const [text, setText] = useState("");
   const [imageData, setImageData] = useState<MacroImage | null>(null);
   const [isShared, setIsShared] = useState(false);
@@ -54,6 +55,7 @@ export default function MacroModal({
     if (initialData) {
       setTitle(initialData.title);
       setCategory(initialData.category);
+      setCountry((initialData.country as MacroCountry) || "general");
       setText(initialData.text);
       setImageData(initialData.image ? { ...initialData.image } : null);
       setIsShared(
@@ -66,6 +68,7 @@ export default function MacroModal({
     } else {
       setTitle("");
       setCategory(selectableCategories[0]?.id || "arqueos");
+      setCountry("general");
       setText("");
       setImageData(null);
       setIsShared(false);
@@ -192,6 +195,7 @@ export default function MacroModal({
       category,
       categoryLabel: meta.label,
       categoryColor: meta.color,
+      country: category === "facturacion" ? country : undefined,
       text: text.trim(),
       updatedAt: initialData ? initialData.updatedAt : "recién",
       isShared,
@@ -298,6 +302,41 @@ export default function MacroModal({
               })}
             </div>
           </div>
+
+          {/* Country Selector for Facturación */}
+          {category === "facturacion" && (
+            <div className="animate-in fade-in duration-150">
+              <label className="block text-xs font-bold text-[#172033] dark:text-slate-200 mb-1.5">
+                País fiscal correspondiente
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {[
+                  { id: "general", label: "General", flag: "🌐" },
+                  { id: "argentina", label: "Argentina (ARCA)", flag: "🇦🇷" },
+                  { id: "chile", label: "Chile (SII)", flag: "🇨🇱" },
+                  { id: "colombia", label: "Colombia (DIAN)", flag: "🇨🇴" },
+                  { id: "mexico", label: "México (SAT)", flag: "🇲🇽" },
+                ].map((c) => {
+                  const isSelected = country === c.id;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setCountry(c.id as MacroCountry)}
+                      className={`px-2 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
+                        isSelected
+                          ? "bg-[#fff0e9] border-[#ff5722] text-[#ff5722] shadow-2xs dark:bg-orange-500/15 dark:border-[#ff5722] dark:text-[#ff7849]"
+                          : "bg-white border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] dark:bg-[#0f1520] dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637]"
+                      }`}
+                    >
+                      <span>{c.flag}</span>
+                      <span className="truncate">{c.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Content / Quick Reply Text */}
           <div>

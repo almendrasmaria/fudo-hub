@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { Search, Sparkles, Plus } from "lucide-react";
 import FilterChip from "@/src/components/ui/FilterChip";
 import Button from "@/src/components/ui/Button";
-import { Category } from "@/src/data/macros";
+import { Category, macroCountryFilters } from "@/src/data/macros";
 
 export interface SearchHeroProps {
   searchQuery: string;
@@ -15,6 +15,9 @@ export interface SearchHeroProps {
   totalCount: number;
   filteredCount: number;
   onNewMacro?: () => void;
+  selectedCountry?: string;
+  onSelectCountry?: (countryId: string) => void;
+  countryCounts?: Record<string, number>;
 }
 
 export default function SearchHero({
@@ -26,6 +29,9 @@ export default function SearchHero({
   totalCount,
   filteredCount,
   onNewMacro,
+  selectedCountry = "todos",
+  onSelectCountry,
+  countryCounts,
 }: SearchHeroProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -106,6 +112,50 @@ export default function SearchHero({
           {filteredCount} {filteredCount === 1 ? "resultado" : "resultados"}
         </span>
       </div>
+
+      {/* Sub-filtro por País en Facturación */}
+      {selectedCategory === "facturacion" && onSelectCountry && (
+        <div className="mt-4 pt-3.5 border-t border-[#e9e5de]/70 dark:border-[#242f42] flex items-center gap-2 flex-wrap animate-in fade-in duration-150">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#697386] dark:text-slate-400 mr-1 flex items-center gap-1">
+            <span>País:</span>
+          </span>
+          {macroCountryFilters.map((country) => {
+            const isCountryActive = selectedCountry === country.id;
+            const count = countryCounts ? countryCounts[country.id] : undefined;
+            return (
+              <button
+                key={country.id}
+                type="button"
+                onClick={() => onSelectCountry(country.id)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                  isCountryActive
+                    ? "bg-[#ff5722] text-white border-[#ff5722] shadow-xs"
+                    : "bg-white text-slate-700 hover:text-slate-900 border-[#e9e5de] hover:border-slate-300 dark:bg-[#151c28] dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637]"
+                }`}
+              >
+                <span>{country.flag}</span>
+                <span>{country.label}</span>
+                {country.entity && (
+                  <span
+                    className={`text-[10px] font-extrabold px-1 rounded ${
+                      isCountryActive
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                    }`}
+                  >
+                    {country.entity}
+                  </span>
+                )}
+                {typeof count === "number" && (
+                  <span className="text-[10px] ml-0.5 opacity-80">
+                    ({count})
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
