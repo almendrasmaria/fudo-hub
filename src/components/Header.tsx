@@ -1,18 +1,22 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sun, Moon, ChevronRight } from "lucide-react";
+import { Sun, Moon, ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 export interface HeaderProps {
   onNewMacro?: () => void;
   onOpenRecent?: () => void;
   activeView?: "macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion";
   onSelectView?: (view: "macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion") => void;
+  isSidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export default function Header({
   activeView = "macros",
   onSelectView,
+  isSidebarOpen = true,
+  onToggleSidebar,
 }: HeaderProps) {
   const [isDark, setIsDark] = useState<boolean>(false);
 
@@ -44,8 +48,32 @@ export default function Header({
   };
 
   return (
-    <header className="h-16 shrink-0 px-8 flex items-center justify-between border-b border-[#e9e5de] bg-white/80 backdrop-blur-md sticky top-0 z-20 transition-colors">
-      <div className="flex items-center gap-2 text-xs font-medium text-[#697386]">
+    <header className="h-16 shrink-0 px-4 sm:px-8 flex items-center justify-between border-b border-[#e9e5de] bg-white/80 backdrop-blur-md sticky top-0 z-20 transition-colors">
+      <div className="flex items-center gap-3">
+        {onToggleSidebar && (
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            title={isSidebarOpen ? "Cerrar barra lateral" : "Abrir barra lateral"}
+            aria-label={isSidebarOpen ? "Cerrar barra lateral" : "Abrir barra lateral"}
+            className={`h-9 px-2.5 rounded-xl border transition-all duration-150 cursor-pointer active:scale-95 flex items-center gap-1.5 ${
+              !isSidebarOpen
+                ? "bg-[#fff0e9] border-[#ffd7c5] text-[#ff5722] hover:bg-[#ffe6da] dark:bg-[#ff5722]/15 dark:border-[#ff5722]/30 dark:hover:bg-[#ff5722]/25 font-semibold text-xs shadow-2xs"
+                : "border-[#e9e5de] bg-white text-[#697386] hover:text-[#172033] hover:bg-[#FAF8F3] dark:hover:bg-slate-800 shadow-2xs"
+            }`}
+          >
+            {isSidebarOpen ? (
+              <PanelLeftClose className="w-4 h-4" />
+            ) : (
+              <>
+                <PanelLeftOpen className="w-4 h-4 text-[#ff5722]" />
+                <span className="text-xs font-bold text-[#ff5722] hidden sm:inline">Menú</span>
+              </>
+            )}
+          </button>
+        )}
+
+        <div className="flex items-center gap-2 text-xs font-medium text-[#697386]">
         <span
           onClick={() => onSelectView && onSelectView("macros")}
           className="hover:text-[#172033] cursor-pointer transition-colors"
@@ -68,8 +96,9 @@ export default function Header({
             : "Macros"}
         </span>
       </div>
+    </div>
 
-      <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={toggleTheme}

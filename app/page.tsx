@@ -26,6 +26,29 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingMacro, setEditingMacro] = useState<Macro | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
+  React.useEffect(() => {
+    const savedSidebar = localStorage.getItem("fudo-sidebar-open");
+    if (savedSidebar !== null) {
+      setIsSidebarOpen(savedSidebar === "true");
+    } else if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => {
+      const next = !prev;
+      localStorage.setItem("fudo-sidebar-open", String(next));
+      return next;
+    });
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+    localStorage.setItem("fudo-sidebar-open", "false");
+  };
 
   React.useEffect(() => {
     const titles: Record<string, string> = {
@@ -146,6 +169,9 @@ export default function Home() {
         categoryCounts={categoryCounts}
         activeView={activeView}
         onSelectView={setActiveView}
+        isOpen={isSidebarOpen}
+        onClose={closeSidebar}
+        onToggle={toggleSidebar}
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
@@ -154,6 +180,8 @@ export default function Home() {
           onOpenRecent={handleOpenRecent}
           activeView={activeView}
           onSelectView={setActiveView}
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={toggleSidebar}
         />
 
         <main className="flex-1 overflow-y-auto p-6 sm:p-8">
