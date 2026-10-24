@@ -11,6 +11,7 @@ import {
   Trash2,
   Pencil,
   Check,
+  Globe,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
 import { Macro, Category, MacroImage, MacroCountry } from "@/src/data/macros";
@@ -311,11 +312,11 @@ export default function MacroModal({
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {[
-                  { id: "general", label: "General", flag: "🌐" },
-                  { id: "argentina", label: "Argentina (ARCA)", flag: "🇦🇷" },
-                  { id: "chile", label: "Chile (SII)", flag: "🇨🇱" },
-                  { id: "colombia", label: "Colombia (DIAN)", flag: "🇨🇴" },
-                  { id: "mexico", label: "México (SAT)", flag: "🇲🇽" },
+                  { id: "general", label: "General" },
+                  { id: "argentina", label: "Argentina (ARCA)" },
+                  { id: "chile", label: "Chile (SII)" },
+                  { id: "colombia", label: "Colombia (DIAN)" },
+                  { id: "mexico", label: "México (SAT)" },
                 ].map((c) => {
                   const isSelected = country === c.id;
                   return (
@@ -329,7 +330,7 @@ export default function MacroModal({
                           : "bg-white border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] dark:bg-[#0f1520] dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637]"
                       }`}
                     >
-                      <span>{c.flag}</span>
+                      {c.id === "general" && <Globe className="w-3.5 h-3.5 shrink-0" />}
                       <span className="truncate">{c.label}</span>
                     </button>
                   );

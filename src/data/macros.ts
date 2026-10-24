@@ -18,16 +18,16 @@ export type MacroCountry = "argentina" | "mexico" | "colombia" | "chile" | "gene
 export interface MacroCountryFilter {
   id: "todos" | MacroCountry;
   label: string;
-  flag: string;
+  flag?: string;
   entity: string;
 }
 
 export const macroCountryFilters: MacroCountryFilter[] = [
-  { id: "todos", label: "Todos", flag: "🌐", entity: "" },
-  { id: "argentina", label: "Argentina", flag: "🇦🇷", entity: "ARCA" },
-  { id: "chile", label: "Chile", flag: "🇨🇱", entity: "SII" },
-  { id: "colombia", label: "Colombia", flag: "🇨🇴", entity: "DIAN" },
-  { id: "mexico", label: "México", flag: "🇲🇽", entity: "SAT" },
+  { id: "todos", label: "Todos", entity: "" },
+  { id: "argentina", label: "Argentina", entity: "ARCA" },
+  { id: "chile", label: "Chile", entity: "SII" },
+  { id: "colombia", label: "Colombia", entity: "DIAN" },
+  { id: "mexico", label: "México", entity: "SAT" },
 ];
 
 export interface Macro {

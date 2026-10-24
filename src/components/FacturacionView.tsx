@@ -491,7 +491,10 @@ export default function FacturacionView() {
                             {/* Sticky Note for renewal/escalation if present */}
                             {currentBranch.note && (
                               <div className="p-3 rounded-xl bg-[#E0F7FA] border-l-4 border-[#00ACC1] text-xs text-[#006064] leading-relaxed font-medium dark:bg-cyan-950/30 dark:border-cyan-500 dark:text-cyan-200">
-                                <p className="font-bold mb-0.5">📌 Nota importante:</p>
+                                <div className="flex items-center gap-1.5 font-bold mb-0.5">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-[#00838F] shrink-0" />
+                                  <span>Nota importante:</span>
+                                </div>
                                 {renderTextWithLinks(currentBranch.note)}
                               </div>
                             )}

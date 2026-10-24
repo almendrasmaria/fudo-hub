@@ -23,24 +23,20 @@ export interface MacroCardProps {
   onGoToFacturacion?: (country?: string) => void;
 }
 
-const countryBadges: Record<string, { flag: string; label: string; className: string }> = {
+const countryBadges: Record<string, { label: string; className: string }> = {
   argentina: {
-    flag: "🇦🇷",
     label: "ARCA",
     className: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/60",
   },
   chile: {
-    flag: "🇨🇱",
     label: "SII",
     className: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60",
   },
   colombia: {
-    flag: "🇨🇴",
     label: "DIAN",
     className: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60",
   },
   mexico: {
-    flag: "🇲🇽",
     label: "SAT",
     className: "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60",
   },
@@ -103,7 +99,6 @@ export default function MacroCard({
                 className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border ${countryBadges[macro.country].className}`}
                 title={`País: ${macro.country.toUpperCase()}`}
               >
-                <span>{countryBadges[macro.country].flag}</span>
                 <span>{countryBadges[macro.country].label}</span>
               </span>
             )}

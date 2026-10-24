@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Search, Sparkles, Plus } from "lucide-react";
+import { Search, Sparkles, Plus, Globe } from "lucide-react";
 import FilterChip from "@/src/components/ui/FilterChip";
 import Button from "@/src/components/ui/Button";
 import { Category, macroCountryFilters } from "@/src/data/macros";
@@ -133,7 +133,9 @@ export default function SearchHero({
                     : "bg-white text-slate-700 hover:text-slate-900 border-[#e9e5de] hover:border-slate-300 dark:bg-[#151c28] dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637]"
                 }`}
               >
-                <span>{country.flag}</span>
+                {country.id === "todos" && (
+                  <Globe className="w-3.5 h-3.5 shrink-0" />
+                )}
                 <span>{country.label}</span>
                 {country.entity && (
                   <span
