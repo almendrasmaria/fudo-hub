@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Search, Sparkles, Plus, Globe } from "lucide-react";
+import { Search, Plus, Globe } from "lucide-react";
 import FilterChip from "@/src/components/ui/FilterChip";
 import Button from "@/src/components/ui/Button";
 import { Category, macroCountryFilters } from "@/src/data/macros";
@@ -50,9 +50,8 @@ export default function SearchHero({
     <div className="mb-8">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div>
-          <div className="flex items-center gap-1.5 text-[#ff5722] text-xs font-bold uppercase tracking-wider mb-1.5">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Biblioteca inteligente</span>
+          <div className="text-[#ff5722] text-xs font-bold uppercase tracking-wider mb-1.5">
+            Biblioteca inteligente
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#172033] tracking-tight">
             Respondé más rápido, ayudá mejor

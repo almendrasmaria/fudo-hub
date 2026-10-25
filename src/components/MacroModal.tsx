@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   X,
-  Sparkles,
   Image as ImageIcon,
   Share2,
   Clock,
@@ -11,7 +10,6 @@ import {
   Trash2,
   Pencil,
   Check,
-  Globe,
   Loader2,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
@@ -236,20 +234,15 @@ function MacroModalDialog({
       >
         {/* Modal Header */}
         <div className="px-6 py-5 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-between bg-[#FAF8F3] dark:bg-[#0f1520]">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#fff0e9] text-[#ff5722] dark:bg-orange-500/15 dark:text-[#ff7849] flex items-center justify-center shadow-2xs border border-[#ff5722]/15 dark:border-orange-500/30">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-base font-extrabold text-[#172033] dark:text-slate-100">
-                {initialData ? "Editar macro" : "Nueva macro"}
-              </h2>
-              <p className="text-[11px] text-[#697386] dark:text-slate-400">
-                {initialData
-                  ? "Modificá la respuesta y sus datos asociados"
-                  : "Creá una respuesta rápida para compartir con clientes"}
-              </p>
-            </div>
+          <div>
+            <h2 className="text-base font-extrabold text-[#172033] dark:text-slate-100">
+              {initialData ? "Editar macro" : "Nueva macro"}
+            </h2>
+            <p className="text-[11px] text-[#697386] dark:text-slate-400">
+              {initialData
+                ? "Modificá la respuesta y sus datos asociados"
+                : "Creá una respuesta rápida para compartir con clientes"}
+            </p>
           </div>
 
           <button
@@ -314,15 +307,15 @@ function MacroModalDialog({
           {category === "facturacion" && (
             <div className="animate-in fade-in duration-150">
               <label className="block text-xs font-bold text-[#172033] dark:text-slate-200 mb-1.5">
-                País fiscal correspondiente
+                País correspondiente
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {[
                   { id: "general", label: "General" },
-                  { id: "argentina", label: "Argentina (ARCA)" },
-                  { id: "chile", label: "Chile (SII)" },
-                  { id: "colombia", label: "Colombia (DIAN)" },
-                  { id: "mexico", label: "México (SAT)" },
+                  { id: "argentina", label: "Argentina" },
+                  { id: "chile", label: "Chile" },
+                  { id: "colombia", label: "Colombia" },
+                  { id: "mexico", label: "México" },
                 ].map((c) => {
                   const isSelected = country === c.id;
                   return (
@@ -330,13 +323,12 @@ function MacroModalDialog({
                       key={c.id}
                       type="button"
                       onClick={() => setCountry(c.id as MacroCountry)}
-                      className={`px-2 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
+                      className={`px-2 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center flex items-center justify-center ${
                         isSelected
                           ? "bg-[#fff0e9] border-[#ff5722] text-[#ff5722] shadow-2xs dark:bg-orange-500/15 dark:border-[#ff5722] dark:text-[#ff7849]"
                           : "bg-white border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] dark:bg-[#0f1520] dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637]"
                       }`}
                     >
-                      {c.id === "general" && <Globe className="w-3.5 h-3.5 shrink-0" />}
                       <span className="truncate">{c.label}</span>
                     </button>
                   );
