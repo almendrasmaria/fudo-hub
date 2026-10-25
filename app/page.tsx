@@ -269,7 +269,6 @@ export default function Home() {
                           macro={macro}
                           onEdit={handleEdit}
                           onDelete={handleDeleteMacro}
-                          onGoToFacturacion={() => setActiveView("facturacion")}
                         />
                       ))}
                     </div>

@@ -9,7 +9,6 @@ import {
   Image as ImageIcon,
   Users,
   Trash2,
-  ExternalLink,
   FileText,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
@@ -20,7 +19,6 @@ export interface MacroCardProps {
   macro: Macro;
   onEdit?: (macro: Macro) => void;
   onDelete?: (macroId: string) => void;
-  onGoToFacturacion?: (country?: string) => void;
 }
 
 const countryBadges: Record<string, { label: string; className: string }> = {
@@ -46,7 +44,6 @@ export default function MacroCard({
   macro,
   onEdit,
   onDelete,
-  onGoToFacturacion,
 }: MacroCardProps) {
   const [copiedText, setCopiedText] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
@@ -130,18 +127,6 @@ export default function MacroCard({
               </span>
             )}
           </div>
-
-          {isFacturacion && onGoToFacturacion && (
-            <button
-              type="button"
-              onClick={() => onGoToFacturacion(macro.country)}
-              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#ff5722] hover:underline cursor-pointer"
-              title="Abrir protocolo oficial y árbol de decisión en Facturación"
-            >
-              <span>Ver en Facturación</span>
-              <ExternalLink className="w-3 h-3" />
-            </button>
-          )}
         </div>
 
         {/* Card Title */}
