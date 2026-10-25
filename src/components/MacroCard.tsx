@@ -78,7 +78,7 @@ export default function MacroCard({
       }
       setCopiedImage(true);
       setTimeout(() => setCopiedImage(false), 2000);
-    } catch (err) {
+    } catch {
       setCopiedImage(true);
       setTimeout(() => setCopiedImage(false), 2000);
     }
@@ -183,6 +183,7 @@ export default function MacroCard({
         {macro.image?.url && (
           <div className="mb-4 rounded-xl border border-[#e9e5de] dark:border-[#242f42] bg-[#FAF9F5] dark:bg-[#0f1520] overflow-hidden">
             <div className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={macro.image.url}
                 alt={macro.image.name || "Captura"}

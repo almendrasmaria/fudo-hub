@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -28,7 +27,7 @@
 body {
   background-color: #FAF8F3;
   color: var(--ink);
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-manrope), "Manrope", sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.2s ease, color 0.2s ease;
 }

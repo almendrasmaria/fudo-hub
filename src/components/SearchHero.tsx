@@ -109,7 +109,9 @@ export default function SearchHero({
         </div>
 
         <span className="text-xs text-[#697386] font-semibold">
-          {filteredCount} {filteredCount === 1 ? "resultado" : "resultados"}
+          {filteredCount === totalCount
+            ? `${totalCount} ${totalCount === 1 ? "macro" : "macros"}`
+            : `${filteredCount} de ${totalCount} macros`}
         </span>
       </div>
 

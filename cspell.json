@@ -1,0 +1,37 @@
+{
+  "version": "0.2",
+  "language": "es,en",
+  "words": [
+    "fudo",
+    "arqueos",
+    "facturacion",
+    "facturación",
+    "derivacion",
+    "derivaciones",
+    "impresoras",
+    "integraciones",
+    "arca",
+    "sat",
+    "dian",
+    "sii",
+    "monotributista",
+    "monotributo",
+    "recargo",
+    "pedidosya",
+    "rappi",
+    "uber",
+    "comanda",
+    "comandas",
+    "posnet",
+    "turbopack",
+    "tailwindcss",
+    "lucide"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    ".next",
+    "out",
+    "build",
+    "package-lock.json"
+  ]
+}

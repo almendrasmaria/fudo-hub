@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useSyncExternalStore } from "react";
 import Sidebar from "@/src/components/Sidebar";
 import Header from "@/src/components/Header";
 import SearchHero from "@/src/components/SearchHero";
@@ -17,6 +17,39 @@ import { SearchX } from "lucide-react";
 
 const ITEMS_PER_PAGE = 4;
 
+const sidebarListeners = new Set<() => void>();
+
+function subscribeSidebar(callback: () => void) {
+  sidebarListeners.add(callback);
+  window.addEventListener("resize", callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    sidebarListeners.delete(callback);
+    window.removeEventListener("resize", callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getSidebarSnapshot(): boolean {
+  if (typeof window === "undefined") return true;
+  const saved = localStorage.getItem("fudo-sidebar-open");
+  if (saved !== null) {
+    return saved === "true";
+  }
+  return window.innerWidth >= 1024;
+}
+
+function getServerSidebarSnapshot(): boolean {
+  return true;
+}
+
+function updateSidebarState(open: boolean) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("fudo-sidebar-open", String(open));
+    sidebarListeners.forEach((listener) => listener());
+  }
+}
+
 export default function Home() {
   const [activeView, setActiveView] = useState<"macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion">("facturacion");
   const [macros, setMacros] = useState<Macro[]>(initialMacros);
@@ -26,28 +59,19 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingMacro, setEditingMacro] = useState<Macro | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
-  React.useEffect(() => {
-    const savedSidebar = localStorage.getItem("fudo-sidebar-open");
-    if (savedSidebar !== null) {
-      setIsSidebarOpen(savedSidebar === "true");
-    } else if (window.innerWidth < 1024) {
-      setIsSidebarOpen(false);
-    }
-  }, []);
+  const isSidebarOpen = useSyncExternalStore(
+    subscribeSidebar,
+    getSidebarSnapshot,
+    getServerSidebarSnapshot
+  );
 
   const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => {
-      const next = !prev;
-      localStorage.setItem("fudo-sidebar-open", String(next));
-      return next;
-    });
+    updateSidebarState(!isSidebarOpen);
   };
 
   const closeSidebar = () => {
-    setIsSidebarOpen(false);
-    localStorage.setItem("fudo-sidebar-open", "false");
+    updateSidebarState(false);
   };
 
   React.useEffect(() => {

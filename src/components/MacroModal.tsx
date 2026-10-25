@@ -32,60 +32,82 @@ const categoryLabels: Record<string, { label: string; color: string }> = {
   configuracion: { label: "CONFIGURACIÓN", color: "orange" },
 };
 
-export default function MacroModal({
-  isOpen,
+function createPastedImageFile(file: File): File {
+  const timestamp = new Date().toISOString().slice(0, 10);
+  const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+  return new File(
+    [file],
+    `captura-${timestamp}-${randomSuffix}.png`,
+    { type: file.type }
+  );
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function MacroModalDialog({
   onClose,
   onSave,
   onDelete,
   initialData,
   categories,
-}: MacroModalProps) {
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("arqueos");
-  const [country, setCountry] = useState<MacroCountry>("general");
-  const [text, setText] = useState("");
-  const [imageData, setImageData] = useState<MacroImage | null>(null);
-  const [isShared, setIsShared] = useState(false);
+}: Omit<MacroModalProps, "isOpen">) {
+  const selectableCategories = categories.filter((c) => c.id !== "todas");
+
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [category, setCategory] = useState(
+    initialData?.category || selectableCategories[0]?.id || "arqueos"
+  );
+  const [country, setCountry] = useState<MacroCountry>(
+    (initialData?.country as MacroCountry) || "general"
+  );
+  const [text, setText] = useState(initialData?.text || "");
+  const [imageData, setImageData] = useState<MacroImage | null>(
+    initialData?.image ? { ...initialData.image } : null
+  );
+  const [isShared, setIsShared] = useState(
+    Boolean(
+      initialData?.isShared ||
+      initialData?.shareStatus === "pending" ||
+      initialData?.shareStatus === "approved"
+    )
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const selectableCategories = categories.filter((c) => c.id !== "todas");
-
-  useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title);
-      setCategory(initialData.category);
-      setCountry((initialData.country as MacroCountry) || "general");
-      setText(initialData.text);
-      setImageData(initialData.image ? { ...initialData.image } : null);
-      setIsShared(
-        Boolean(
-          initialData.isShared ||
-          initialData.shareStatus === "pending" ||
-          initialData.shareStatus === "approved"
-        )
-      );
-    } else {
-      setTitle("");
-      setCategory(selectableCategories[0]?.id || "arqueos");
-      setCountry("general");
-      setText("");
-      setImageData(null);
-      setIsShared(false);
-    }
-    setError("");
-  }, [initialData, isOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === "Escape") {
         onClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [onClose]);
+
+  const handleProcessFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setError("Solo se permiten archivos de imagen (PNG, JPG, WEBP, GIF)");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImageData({
+        name: file.name,
+        url: e.target?.result as string,
+        size: formatFileSize(file.size),
+        previewType: category,
+      });
+      setError("");
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Support Ctrl+V paste of images from clipboard
   const handlePaste = (e: React.ClipboardEvent) => {
@@ -97,43 +119,12 @@ export default function MacroModal({
         const file = items[i].getAsFile();
         if (file) {
           e.preventDefault();
-          const timestamp = new Date().toISOString().slice(0, 10);
-          const autoNamedFile = new File(
-            [file],
-            `captura-${timestamp}-${Date.now().toString().slice(-4)}.png`,
-            { type: file.type }
-          );
+          const autoNamedFile = createPastedImageFile(file);
           handleProcessFile(autoNamedFile);
           break;
         }
       }
     }
-  };
-
-  const handleProcessFile = (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      setError("Solo se permiten archivos de imagen (PNG, JPG, WEBP, GIF)");
-      return;
-    }
-
-    // Format human-readable file size
-    const formatSize = (bytes: number) => {
-      if (bytes < 1024) return `${bytes} B`;
-      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-    };
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImageData({
-        name: file.name,
-        url: e.target?.result as string,
-        size: formatSize(file.size),
-        previewType: category,
-      });
-      setError("");
-    };
-    reader.readAsDataURL(file);
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,8 +160,6 @@ export default function MacroModal({
       onClose();
     }
   };
-
-  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -389,6 +378,7 @@ export default function MacroModal({
                   {/* Thumbnail */}
                   <div className="w-16 h-14 rounded-xl overflow-hidden bg-slate-900/10 dark:bg-black/30 border border-[#e9e5de] dark:border-[#242f42] shrink-0 flex items-center justify-center relative">
                     {imageData.url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={imageData.url}
                         alt={imageData.name}
@@ -566,4 +556,9 @@ export default function MacroModal({
       </div>
     </div>
   );
+}
+
+export default function MacroModal(props: MacroModalProps) {
+  if (!props.isOpen) return null;
+  return <MacroModalDialog key={props.initialData?.id || "new"} {...props} />;
 }

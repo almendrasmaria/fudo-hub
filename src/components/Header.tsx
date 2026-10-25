@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useSyncExternalStore } from "react";
 import { Sun, Moon, ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 export interface HeaderProps {
@@ -12,32 +12,50 @@ export interface HeaderProps {
   onToggleSidebar?: () => void;
 }
 
+function subscribeTheme(callback: () => void) {
+  window.addEventListener("storage", callback);
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    media.removeEventListener("change", callback);
+  };
+}
+
+function getThemeSnapshot(): boolean {
+  if (typeof window === "undefined") return false;
+  const stored = localStorage.getItem("fudo-theme");
+  if (stored === "dark") return true;
+  if (stored === "light") return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function getServerThemeSnapshot(): boolean {
+  return false;
+}
+
 export default function Header({
   activeView = "macros",
   onSelectView,
   isSidebarOpen = true,
   onToggleSidebar,
 }: HeaderProps) {
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const isDark = useSyncExternalStore(
+    subscribeTheme,
+    getThemeSnapshot,
+    getServerThemeSnapshot
+  );
 
   useEffect(() => {
-    const isDarkStored =
-      localStorage.getItem("fudo-theme") === "dark" ||
-      (!localStorage.getItem("fudo-theme") &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-    if (isDarkStored) {
+    if (isDark) {
       document.documentElement.classList.add("dark");
-      setIsDark(true);
     } else {
       document.documentElement.classList.remove("dark");
-      setIsDark(false);
     }
-  }, []);
+  }, [isDark]);
 
   const toggleTheme = () => {
     const nextDark = !isDark;
-    setIsDark(nextDark);
     if (nextDark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("fudo-theme", "dark");
@@ -45,6 +63,7 @@ export default function Header({
       document.documentElement.classList.remove("dark");
       localStorage.setItem("fudo-theme", "light");
     }
+    window.dispatchEvent(new Event("storage"));
   };
 
   return (

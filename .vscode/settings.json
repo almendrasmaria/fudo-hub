@@ -1,0 +1,28 @@
+{
+  "cSpell.language": "es,en",
+  "cSpell.words": [
+    "fudo",
+    "arqueos",
+    "facturacion",
+    "facturación",
+    "derivacion",
+    "derivaciones",
+    "impresoras",
+    "integraciones",
+    "arca",
+    "sat",
+    "dian",
+    "sii",
+    "monotributista",
+    "monotributo",
+    "recargo",
+    "pedidosya",
+    "rappi",
+    "uber",
+    "comanda",
+    "comandas",
+    "posnet",
+    "turbopack"
+  ],
+  "cSpell.enableFiletypes": ["typescript", "typescriptreact", "javascript", "javascriptreact", "css", "json", "markdown"]
+}

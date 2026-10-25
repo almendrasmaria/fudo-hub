@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import {
   LayoutGrid,
   ArrowRightLeft,
@@ -91,9 +92,12 @@ export default function Sidebar({
               }}
               className="cursor-pointer select-none"
             >
-              <img
+              <Image
                 src="/logo.png"
                 alt="Fudo Macros"
+                width={180}
+                height={56}
+                priority
                 className="h-14 w-auto object-contain"
               />
             </div>

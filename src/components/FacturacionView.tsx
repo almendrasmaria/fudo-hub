@@ -8,7 +8,6 @@ import {
   ReceiptText,
   ExternalLink,
   AlertTriangle,
-  ArrowRightLeft,
   X,
   ChevronDown,
   ChevronUp,
@@ -24,7 +23,6 @@ import {
   CountryId,
   countriesInfo,
   invoiceIssues,
-  InvoiceIssue,
 } from "@/src/data/facturacion";
 
 export default function FacturacionView() {

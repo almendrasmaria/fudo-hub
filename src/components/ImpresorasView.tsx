@@ -14,9 +14,6 @@ import {
 } from "lucide-react";
 import {
   printersData,
-  PrinterModel,
-  CompatibilityStatus,
-  statusLabels,
 } from "@/src/data/impresoras";
 import Pagination from "@/src/components/ui/Pagination";
 
