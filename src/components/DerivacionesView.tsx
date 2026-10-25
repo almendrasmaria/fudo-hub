@@ -99,7 +99,7 @@ export default function DerivacionesView() {
                   <span className="text-[10px] font-bold text-[#697386] uppercase tracking-wider block">
                     {team.actionType}:
                   </span>
-                  <div className="text-xs font-bold text-[#ff5722] font-mono break-words">
+                  <div className="text-xs font-bold text-[#ff5722] font-mono wrap-break-word">
                     {team.actionName}
                   </div>
                 </div>

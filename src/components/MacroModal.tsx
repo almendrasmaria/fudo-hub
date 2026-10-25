@@ -12,6 +12,7 @@ import {
   Pencil,
   Check,
   Globe,
+  Loader2,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
 import { Macro, Category, MacroImage, MacroCountry } from "@/src/data/macros";
@@ -19,7 +20,7 @@ import { Macro, Category, MacroImage, MacroCountry } from "@/src/data/macros";
 export interface MacroModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (macro: Macro) => void;
+  onSave: (macro: Macro, imageFile?: File | null) => Promise<void> | void;
   onDelete?: (macroId: string) => void;
   initialData?: Macro | null;
   categories: Category[];
@@ -75,6 +76,8 @@ function MacroModalDialog({
       initialData?.shareStatus === "approved"
     )
   );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState("");
 
@@ -82,19 +85,21 @@ function MacroModalDialog({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !isSubmitting) {
         onClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, [onClose, isSubmitting]);
 
   const handleProcessFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
       setError("Solo se permiten archivos de imagen (PNG, JPG, WEBP, GIF)");
       return;
     }
+
+    setSelectedFile(file);
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -145,6 +150,7 @@ function MacroModalDialog({
 
   const handleRemoveImage = () => {
     setImageData(null);
+    setSelectedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -161,7 +167,7 @@ function MacroModalDialog({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -204,8 +210,19 @@ function MacroModalDialog({
         : undefined,
     };
 
-    onSave(macroToSave);
-    onClose();
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      await onSave(macroToSave, selectedFile);
+      onClose();
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Ocurrió un error al guardar la macro";
+      setError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -544,11 +561,28 @@ function MacroModalDialog({
             </div>
 
             <div className="flex items-center gap-2.5">
-              <Button variant="secondary" size="md" type="button" onClick={onClose}>
+              <Button
+                variant="secondary"
+                size="md"
+                type="button"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
                 Cancelar
               </Button>
-              <Button variant="primary" size="md" type="submit">
-                {initialData ? "Guardar cambios" : "Crear macro"}
+              <Button
+                variant="primary"
+                size="md"
+                type="submit"
+                disabled={isSubmitting}
+                icon={isSubmitting ? Loader2 : undefined}
+                className={isSubmitting ? "[&_svg]:animate-spin" : ""}
+              >
+                {isSubmitting
+                  ? "Guardando en Supabase..."
+                  : initialData
+                  ? "Guardar cambios"
+                  : "Crear macro"}
               </Button>
             </div>
           </div>

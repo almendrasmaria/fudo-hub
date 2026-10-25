@@ -13,6 +13,7 @@ import FacturacionView from "@/src/components/FacturacionView";
 import Button from "@/src/components/ui/Button";
 import Pagination from "@/src/components/ui/Pagination";
 import { categories, initialMacros, Macro } from "@/src/data/macros";
+import { getMacros, saveMacro, deleteMacro } from "@/src/lib/macrosService";
 import { SearchX } from "lucide-react";
 
 const ITEMS_PER_PAGE = 4;
@@ -84,6 +85,18 @@ export default function Home() {
     };
     document.title = titles[activeView] || "Fudo Hub | Centro de Soporte";
   }, [activeView]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    getMacros().then((data) => {
+      if (isMounted && data && data.length > 0) {
+        setMacros(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {
@@ -161,18 +174,26 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
-  const handleSaveMacro = (macroToSave: Macro) => {
+  const handleSaveMacro = async (macroToSave: Macro, imageFile?: File | null) => {
+    // Guarda en Supabase (subiendo imagen si hay archivo nuevo)
+    const saved = await saveMacro(macroToSave, imageFile);
+
     if (editingMacro) {
       setMacros((prev) =>
-        prev.map((m) => (m.id === macroToSave.id ? macroToSave : m))
+        prev.map((m) => (m.id === saved.id ? saved : m))
       );
     } else {
-      setMacros((prev) => [macroToSave, ...prev]);
+      setMacros((prev) => [saved, ...prev]);
       setCurrentPage(1);
     }
   };
 
-  const handleDeleteMacro = (macroId: string) => {
+  const handleDeleteMacro = async (macroId: string) => {
+    try {
+      await deleteMacro(macroId);
+    } catch (err) {
+      console.error("Error al eliminar macro de Supabase:", err);
+    }
     setMacros((prev) => prev.filter((m) => m.id !== macroId));
     if (editingMacro?.id === macroId) {
       setIsModalOpen(false);
