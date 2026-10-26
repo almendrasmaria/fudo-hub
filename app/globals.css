@@ -364,3 +364,25 @@ html.dark .border-\[\#FFCCBA\] {
   border-color: rgba(255, 87, 34, 0.35) !important;
 }
 
+/* ==========================================================================
+   Custom Sleek Scrollbar for Macro Cards
+   ========================================================================== */
+.macro-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.macro-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.macro-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(105, 115, 134, 0.28);
+  border-radius: 9999px;
+}
+.macro-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 87, 34, 0.65);
+}
+.macro-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(105, 115, 134, 0.28) transparent;
+}
+
+

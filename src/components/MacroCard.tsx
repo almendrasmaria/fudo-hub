@@ -135,10 +135,10 @@ export default function MacroCard({
 
   return (
     <>
-      <div className="bg-white dark:bg-[#151c28] rounded-2xl border border-[#e9e5de] dark:border-[#242f42] hover:border-[#dcd6cc] dark:hover:border-slate-700 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between p-5 group">
-        <div>
+      <div className="bg-white dark:bg-[#151c28] rounded-2xl border border-[#e9e5de] dark:border-[#242f42] hover:border-[#dcd6cc] dark:hover:border-slate-700 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between p-5 group h-[400px]">
+        <div className="flex-1 min-h-0 flex flex-col">
           {/* Card Header */}
-          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div className="flex items-center justify-between mb-2 flex-wrap gap-2 shrink-0">
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant={macro.category}>
                 {macro.categoryLabel}
@@ -206,18 +206,19 @@ export default function MacroCard({
             )}
           </div>
 
-          {/* Card Title */}
+          {/* Card Title (Unified 2-line height) */}
           <h3
-            className={`text-base font-bold text-[#172033] dark:text-white mb-2.5 group-hover:text-[#ff5722] transition-colors ${isFacturacion ? "font-extrabold tracking-tight" : ""
+            className={`text-base font-bold text-[#172033] dark:text-white mb-2.5 group-hover:text-[#ff5722] transition-colors line-clamp-2 h-11 flex items-center leading-snug shrink-0 ${isFacturacion ? "font-extrabold tracking-tight" : ""
               }`}
+            title={isFacturacion && macro.errorSnippet ? macro.errorSnippet : macro.title}
           >
             {isFacturacion && macro.errorSnippet ? macro.errorSnippet : macro.title}
           </h3>
 
           {/* Unified Client Response Container for all Macros */}
-          <div className="space-y-3 mb-4">
-            <div className="bg-[#FAF9F5] dark:bg-[#0f1520] rounded-xl border border-[#e9e5de] dark:border-[#242f42] p-3.5 space-y-2">
-              <div className="flex items-center justify-between">
+          <div className="flex-1 min-h-0 flex flex-col mb-3">
+            <div className="bg-[#FAF9F5] dark:bg-[#0f1520] rounded-xl border border-[#e9e5de] dark:border-[#242f42] p-3 flex flex-col h-full overflow-hidden">
+              <div className="flex items-center justify-between shrink-0 mb-1.5">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-[#ff5722] dark:text-orange-400">
                   <FileText className="w-3.5 h-3.5 text-[#ff5722]" />
                   <span>Respuesta para el cliente</span>
@@ -226,74 +227,58 @@ export default function MacroCard({
                   Soporte
                 </span>
               </div>
-              <p className="text-xs text-[#172033] dark:text-slate-200 leading-relaxed whitespace-pre-line font-normal">
+              <div className="flex-1 min-h-0 overflow-y-auto pr-1 text-xs text-[#172033] dark:text-slate-200 leading-relaxed whitespace-pre-line font-normal macro-scrollbar">
                 {macro.text}
-              </p>
+              </div>
             </div>
           </div>
 
           {/* Real Image Preview (ONLY when macro.image?.url exists) */}
           {macro.image?.url && (
-            <div className="mb-4 rounded-xl border border-[#e9e5de] dark:border-[#242f42] bg-[#FAF9F5] dark:bg-[#0f1520] overflow-hidden">
-              <div
-                onClick={() => setIsLightboxOpen(true)}
-                className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img cursor-zoom-in"
-                title="Hacé clic para ampliar la captura"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={macro.image.url}
-                  alt={macro.image.name || "Captura"}
-                  className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
-                />
-
-                {/* Subtle Hover Zoom Overlay */}
-                <div className="absolute inset-0 bg-black/35 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md text-white text-xs font-semibold shadow-md transform translate-y-1 group-hover/img:translate-y-0 transition-transform duration-200 border border-white/20">
-                    <ZoomIn className="w-3.5 h-3.5" />
-                    <span>Ampliar imagen</span>
-                  </span>
+            <div
+              onClick={() => setIsLightboxOpen(true)}
+              className="shrink-0 mb-3 flex items-center justify-between p-2 rounded-xl bg-[#FAF9F5] dark:bg-[#0f1520] border border-[#e9e5de] dark:border-[#242f42] cursor-pointer hover:border-[#ff5722]/50 transition-all group/att"
+              title="Hacé clic para ampliar la captura"
+            >
+              <div className="flex items-center gap-2 min-w-0 pr-2">
+                <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                  <ImageIcon className="w-3.5 h-3.5 text-[#ff5722]" />
                 </div>
-              </div>
-
-              <div className="px-3.5 py-2.5 bg-white dark:bg-[#151c28] flex items-center justify-between text-[11px] text-[#697386] dark:text-slate-400">
-                <div
-                  onClick={() => setIsLightboxOpen(true)}
-                  className="flex items-center gap-1.5 truncate pr-2 cursor-pointer hover:text-[#ff5722] dark:hover:text-[#ff5722] transition-colors"
-                  title="Hacé clic para ampliar"
-                >
-                  <ImageIcon className="w-3.5 h-3.5 text-[#ff5722] shrink-0" />
-                  <span className="truncate font-medium text-slate-700 dark:text-slate-300">
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover/att:text-[#ff5722]">
                     {macro.image.name}
-                  </span>
-                  {macro.image.size && (
-                    <span className="text-slate-400 shrink-0">({macro.image.size})</span>
-                  )}
+                  </p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Hacé clic para ver en grande
+                  </p>
                 </div>
-
-                {/* Copiar imagen button */}
-                <button
-                  type="button"
-                  onClick={handleCopyImage}
-                  className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer active:scale-95 shadow-2xs ${copiedImage
-                    ? "bg-emerald-50 text-[#3CAD75] border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800"
-                    : "bg-[#fff0e9] text-[#ff5722] border-[#ffd7c5] hover:bg-[#ffe6da] dark:bg-orange-500/15 dark:border-orange-500/30 dark:hover:bg-orange-500/25"
-                    }`}
-                  title="Copiar imagen para pegar directo en WhatsApp o chat"
-                >
-                  {copiedImage ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-[#3CAD75] stroke-[2.5]" />
-                      <span className="text-[#3CAD75] font-bold">¡Imagen copiada!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 stroke-2" />
-                      <span>Copiar imagen</span>
-                    </>
-                  )}
-                </button>
               </div>
+
+              {/* Copiar imagen button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopyImage();
+                }}
+                className={`shrink-0 flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg border transition-all cursor-pointer active:scale-95 shadow-2xs ${copiedImage
+                  ? "bg-emerald-50 text-[#3CAD75] border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800"
+                  : "bg-[#fff0e9] text-[#ff5722] border-[#ffd7c5] hover:bg-[#ffe6da] dark:bg-orange-500/15 dark:border-orange-500/30 dark:hover:bg-orange-500/25"
+                  }`}
+                title="Copiar imagen para pegar directo en WhatsApp o chat"
+              >
+                {copiedImage ? (
+                  <>
+                    <Check className="w-3 h-3 text-[#3CAD75] stroke-[2.5]" />
+                    <span className="text-[#3CAD75] font-bold">¡Copiada!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3 stroke-2" />
+                    <span>Copiar imagen</span>
+                  </>
+                )}
+              </button>
             </div>
           )}
         </div>
