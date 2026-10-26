@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
+import ConfirmModal from "@/src/components/ui/ConfirmModal";
 import { Macro, Category, MacroImage, MacroCountry } from "@/src/data/macros";
 
 export interface MacroModalProps {
@@ -154,15 +155,13 @@ function MacroModalDialog({
     }
   };
 
-  const handleDeleteMacro = () => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleDeleteConfirm = () => {
     if (!initialData || !onDelete) return;
-    const confirmed = window.confirm(
-      `¿Estás seguro de que deseás eliminar la macro "${initialData.title}"? Esta acción no se puede deshacer.`
-    );
-    if (confirmed) {
-      onDelete(initialData.id);
-      onClose();
-    }
+    onDelete(initialData.id);
+    setShowDeleteConfirm(false);
+    onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -543,7 +542,7 @@ function MacroModalDialog({
                   variant="ghost"
                   size="md"
                   type="button"
-                  onClick={handleDeleteMacro}
+                  onClick={() => setShowDeleteConfirm(true)}
                   className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/30"
                   icon={Trash2}
                 >
@@ -580,6 +579,17 @@ function MacroModalDialog({
           </div>
         </form>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDeleteConfirm}
+        title="¿Eliminar macro?"
+        description={`Estás por eliminar "${initialData?.title || 'esta macro'}". Esta acción quitará la macro de la biblioteca y no se puede deshacer.`}
+        confirmText="Eliminar macro"
+        cancelText="Cancelar"
+        variant="danger"
+      />
     </div>
   );
 }

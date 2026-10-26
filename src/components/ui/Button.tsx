@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "success" | "outline";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "success" | "outline" | "danger";
 export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -36,6 +36,8 @@ export default function Button({
       "bg-[#3CAD75] text-white shadow-xs shadow-emerald-500/20 active:scale-98",
     outline:
       "bg-transparent border border-[#e9e5de] text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033] active:scale-98 dark:border-[#242f42] dark:text-slate-300 dark:hover:bg-[#1c2637] dark:hover:text-white",
+    danger:
+      "bg-red-600 hover:bg-red-700 text-white shadow-xs shadow-red-600/20 active:scale-98 border border-transparent",
   };
 
   const sizes: Record<ButtonSize, string> = {

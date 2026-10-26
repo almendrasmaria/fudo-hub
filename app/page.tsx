@@ -12,11 +12,12 @@ import ImpresorasView from "@/src/components/ImpresorasView";
 import FacturacionView from "@/src/components/FacturacionView";
 import Button from "@/src/components/ui/Button";
 import Pagination from "@/src/components/ui/Pagination";
+import ToastContainer, { ToastMessage, ToastType } from "@/src/components/ui/Toast";
 import { categories, initialMacros, Macro } from "@/src/data/macros";
 import { getMacros, saveMacro, deleteMacro } from "@/src/lib/macrosService";
 import { SearchX } from "lucide-react";
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 8;
 
 const sidebarListeners = new Set<() => void>();
 
@@ -60,6 +61,16 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingMacro, setEditingMacro] = useState<Macro | null>(null);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const addToast = (type: ToastType, title: string, message?: string) => {
+    const id = `toast-${Date.now()}-${Math.random()}`;
+    setToasts((prev) => [...prev, { id, type, title, message }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   const isSidebarOpen = useSyncExternalStore(
     subscribeSidebar,
@@ -182,9 +193,11 @@ export default function Home() {
       setMacros((prev) =>
         prev.map((m) => (m.id === saved.id ? saved : m))
       );
+      addToast("success", "Macro actualizada", `"${saved.title}" fue actualizada correctamente.`);
     } else {
       setMacros((prev) => [saved, ...prev]);
       setCurrentPage(1);
+      addToast("success", "Macro creada", `"${saved.title}" se agregó a la biblioteca.`);
     }
   };
 
@@ -199,10 +212,15 @@ export default function Home() {
       setIsModalOpen(false);
       setEditingMacro(null);
     }
+    addToast("success", "Macro eliminada", "La macro fue removida de la biblioteca.");
   };
 
   const handleOpenRecent = () => {
-    alert("Próximamente: Historial de macros recientes.");
+    addToast(
+      "info",
+      "Historial de macros recientes",
+      "Esta función estará disponible en la próxima actualización de Fudo Hub."
+    );
   };
 
   return (
@@ -319,6 +337,8 @@ export default function Home() {
         initialData={editingMacro}
         categories={categories}
       />
+
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }
