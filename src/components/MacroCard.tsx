@@ -11,10 +11,12 @@ import {
   Trash2,
   FileText,
   Star,
+  ZoomIn,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
 import Badge from "@/src/components/ui/Badge";
 import ConfirmModal from "@/src/components/ui/ConfirmModal";
+import ImageLightbox from "@/src/components/ui/ImageLightbox";
 import { Macro } from "@/src/data/macros";
 
 export interface MacroCardProps {
@@ -52,6 +54,7 @@ export default function MacroCard({
   const [copiedText, setCopiedText] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const isFacturacion = macro.category === "facturacion";
 
@@ -240,17 +243,33 @@ export default function MacroCard({
           {/* Real Image Preview (ONLY when macro.image?.url exists) */}
           {macro.image?.url && (
             <div className="mb-4 rounded-xl border border-[#e9e5de] dark:border-[#242f42] bg-[#FAF9F5] dark:bg-[#0f1520] overflow-hidden">
-              <div className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img">
+              <div
+                onClick={() => setIsLightboxOpen(true)}
+                className="relative h-44 w-full bg-slate-900/5 dark:bg-black/30 border-b border-[#e9e5de] dark:border-[#242f42] flex items-center justify-center overflow-hidden group/img cursor-zoom-in"
+                title="Hacé clic para ampliar la captura"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={macro.image.url}
                   alt={macro.image.name || "Captura"}
                   className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
                 />
+
+                {/* Subtle Hover Zoom Overlay */}
+                <div className="absolute inset-0 bg-black/35 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md text-white text-xs font-semibold shadow-md transform translate-y-1 group-hover/img:translate-y-0 transition-transform duration-200 border border-white/20">
+                    <ZoomIn className="w-3.5 h-3.5" />
+                    <span>Ampliar imagen</span>
+                  </span>
+                </div>
               </div>
 
               <div className="px-3.5 py-2.5 bg-white dark:bg-[#151c28] flex items-center justify-between text-[11px] text-[#697386] dark:text-slate-400">
-                <div className="flex items-center gap-1.5 truncate pr-2">
+                <div
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="flex items-center gap-1.5 truncate pr-2 cursor-pointer hover:text-[#ff5722] dark:hover:text-[#ff5722] transition-colors"
+                  title="Hacé clic para ampliar"
+                >
                   <ImageIcon className="w-3.5 h-3.5 text-[#ff5722] shrink-0" />
                   <span className="truncate font-medium text-slate-700 dark:text-slate-300">
                     {macro.image.name}
@@ -344,6 +363,19 @@ export default function MacroCard({
         cancelText="Cancelar"
         variant="danger"
       />
+
+      {/* Lightbox / Zoom modal */}
+      {macro.image?.url && (
+        <ImageLightbox
+          isOpen={isLightboxOpen}
+          onClose={() => setIsLightboxOpen(false)}
+          imageUrl={macro.image.url}
+          imageName={macro.image.name}
+          macroTitle={macro.title}
+          onCopyImage={handleCopyImage}
+          copiedImage={copiedImage}
+        />
+      )}
     </>
   );
 }
