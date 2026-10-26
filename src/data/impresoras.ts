@@ -427,7 +427,7 @@ export const printersData: PrinterModel[] = [
     qrArgentina: "advertencia",
     pdf417Chile: "no",
     recommendedFudo: "advertencia",
-    notes: "Requiere configuración específica para QR Argentina. No recomendada para Chile.",
+    notes: "ADVERTENCIA: La impresora es compatible con QR pero desde Fudo no se puede imprimir el QR de Factura Electrónica en impresoras de 58mm. Sirve únicamente para el QR de MercadoPago.",
   },
   {
     id: "gadnic-tp450s",
@@ -447,6 +447,7 @@ export const printersData: PrinterModel[] = [
     qrArgentina: "advertencia",
     pdf417Chile: "no",
     recommendedFudo: "advertencia",
+    notes: "ADVERTENCIA: La impresora es compatible con QR pero desde Fudo no se puede imprimir el QR de Factura Electrónica en impresoras de 58mm. Sirve únicamente para el QR de MercadoPago.",
   },
 
   // HASAR

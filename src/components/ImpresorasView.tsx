@@ -22,6 +22,7 @@ const ITEMS_PER_PAGE = 8;
 export default function ImpresorasView() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [activeWarningKey, setActiveWarningKey] = useState<string | null>(null);
 
   const normalizeText = (text: string): string => {
     return text
@@ -178,10 +179,43 @@ export default function ImpresorasView() {
                       </span>
                     )}
                     {hasWarning && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 text-xs font-bold shadow-2xs dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-300 shrink-0" />
-                        Con advertencia
-                      </span>
+                      <div
+                        className="relative"
+                        onMouseEnter={() =>
+                          printer.notes && setActiveWarningKey(`${printer.id}-status`)
+                        }
+                        onMouseLeave={() => setActiveWarningKey(null)}
+                      >
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 text-xs font-bold shadow-2xs dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40 select-none ${
+                            printer.notes
+                              ? "cursor-help hover:bg-amber-100 dark:hover:bg-amber-500/30"
+                              : ""
+                          }`}
+                        >
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-300 shrink-0" />
+                          <span>Con advertencia</span>
+                        </span>
+
+                        {activeWarningKey === `${printer.id}-status` && printer.notes && (
+                          <div className="absolute right-0 top-full mt-2 z-50 w-80 sm:w-96 p-3.5 rounded-2xl bg-white dark:bg-[#151c28] border-2 border-amber-400 dark:border-amber-500/70 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+                            <div className="absolute right-6 -top-2 w-3.5 h-3.5 bg-white dark:bg-[#151c28] border-t-2 border-l-2 border-amber-400 dark:border-amber-500/70 rotate-45" />
+                            <div className="flex items-start gap-3">
+                              <div className="w-7 h-7 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 border border-amber-300 dark:border-amber-700/60 mt-0.5">
+                                <AlertTriangle className="w-4 h-4" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-[11px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">
+                                  Advertencia de compatibilidad
+                                </p>
+                                <p className="text-xs text-[#172033] dark:text-slate-100 font-medium leading-relaxed">
+                                  {printer.notes}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
                     {!isRecommended && !isNotRecommended && !hasWarning && (
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-50 text-gray-700 border border-gray-200 text-xs font-semibold dark:bg-slate-700/40 dark:text-slate-300 dark:border-slate-600/40">
@@ -223,30 +257,67 @@ export default function ImpresorasView() {
 
                   {/* QR - Facturas ARG */}
                   <div
-                    title="Necesario para imprimir QR dinámico de MercadoPago y Factura Electrónica de ARG, BR y COL"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FAF8F3] border border-[#e9e5de]"
+                    className="relative"
+                    onMouseEnter={() =>
+                      printer.qrArgentina === "advertencia" &&
+                      printer.notes &&
+                      setActiveWarningKey(`${printer.id}-qr`)
+                    }
+                    onMouseLeave={() => setActiveWarningKey(null)}
                   >
-                    <QrCode className="w-3.5 h-3.5 text-[#697386]" />
-                    <span className="text-[#697386] font-semibold">QR - Facturas ARG:</span>
-                    <span
-                      className={`font-bold ${
-                        printer.qrArgentina === "si"
-                          ? "text-emerald-700 dark:text-emerald-300"
-                          : printer.qrArgentina === "advertencia"
-                          ? "text-amber-800 dark:text-amber-300"
-                          : printer.qrArgentina === "no"
-                          ? "text-red-700 dark:text-red-300"
-                          : "text-gray-500 dark:text-gray-400"
+                    <div
+                      title={
+                        printer.qrArgentina === "advertencia" && printer.notes
+                          ? undefined
+                          : "Necesario para imprimir QR dinámico de MercadoPago y Factura Electrónica de ARG, BR y COL"
+                      }
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FAF8F3] border transition-all ${
+                        printer.qrArgentina === "advertencia"
+                          ? "border-amber-300 hover:bg-amber-50/70 cursor-help"
+                          : "border-[#e9e5de]"
                       }`}
                     >
-                      {printer.qrArgentina === "si"
-                        ? "Sí"
-                        : printer.qrArgentina === "advertencia"
-                        ? "Advertencia"
-                        : printer.qrArgentina === "no"
-                        ? "No"
-                        : "Sin datos"}
-                    </span>
+                      <QrCode className="w-3.5 h-3.5 text-[#697386]" />
+                      <span className="text-[#697386] font-semibold">QR - Facturas ARG:</span>
+                      <span
+                        className={`font-bold ${
+                          printer.qrArgentina === "si"
+                            ? "text-emerald-700 dark:text-emerald-300"
+                            : printer.qrArgentina === "advertencia"
+                            ? "text-amber-800 dark:text-amber-300"
+                            : printer.qrArgentina === "no"
+                            ? "text-red-700 dark:text-red-300"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                      >
+                        {printer.qrArgentina === "si"
+                          ? "Sí"
+                          : printer.qrArgentina === "advertencia"
+                          ? "Sí, advertencia!"
+                          : printer.qrArgentina === "no"
+                          ? "No"
+                          : "Sin datos"}
+                      </span>
+                    </div>
+
+                    {activeWarningKey === `${printer.id}-qr` && printer.notes && (
+                      <div className="absolute left-0 top-full mt-2 z-50 w-80 sm:w-96 p-3.5 rounded-2xl bg-white dark:bg-[#151c28] border-2 border-amber-400 dark:border-amber-500/70 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+                        <div className="absolute left-6 -top-2 w-3.5 h-3.5 bg-white dark:bg-[#151c28] border-t-2 border-l-2 border-amber-400 dark:border-amber-500/70 rotate-45" />
+                        <div className="flex items-start gap-3">
+                          <div className="w-7 h-7 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 border border-amber-300 dark:border-amber-700/60 mt-0.5">
+                            <AlertTriangle className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-[11px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">
+                              Advertencia QR (ARCA / MercadoPago)
+                            </p>
+                            <p className="text-xs text-[#172033] dark:text-slate-100 font-medium leading-relaxed">
+                              {printer.notes}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* PDF417 Chile */}
