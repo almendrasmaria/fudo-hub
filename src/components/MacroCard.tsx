@@ -10,6 +10,7 @@ import {
   Users,
   Trash2,
   FileText,
+  Star,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
 import Badge from "@/src/components/ui/Badge";
@@ -20,6 +21,7 @@ export interface MacroCardProps {
   macro: Macro;
   onEdit?: (macro: Macro) => void;
   onDelete?: (macroId: string) => void;
+  onToggleFavorite?: (macroId: string) => void;
 }
 
 const countryBadges: Record<string, { label: string; className: string }> = {
@@ -45,6 +47,7 @@ export default function MacroCard({
   macro,
   onEdit,
   onDelete,
+  onToggleFavorite,
 }: MacroCardProps) {
   const [copiedText, setCopiedText] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
@@ -174,6 +177,32 @@ export default function MacroCard({
                 </span>
               )}
             </div>
+
+            {/* Favorite Star Button */}
+            {onToggleFavorite && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleFavorite(macro.id);
+                }}
+                title={macro.isFavorite ? "Quitar de favoritas" : "Guardar como favorita"}
+                aria-label={macro.isFavorite ? "Quitar de favoritas" : "Guardar como favorita"}
+                className={`p-1.5 rounded-xl transition-all cursor-pointer active:scale-90 border ${
+                  macro.isFavorite
+                    ? "bg-amber-50 text-amber-500 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 shadow-2xs"
+                    : "border-transparent text-slate-300 hover:text-amber-500 hover:bg-amber-50/60 hover:border-amber-200 dark:text-slate-600 dark:hover:text-amber-400 dark:hover:bg-amber-950/30"
+                }`}
+              >
+                <Star
+                  className={`w-4 h-4 transition-transform ${
+                    macro.isFavorite
+                      ? "fill-amber-400 text-amber-500 scale-105"
+                      : "stroke-[2]"
+                  }`}
+                />
+              </button>
+            )}
           </div>
 
           {/* Card Title */}
