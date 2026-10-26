@@ -214,31 +214,23 @@ export default function MacroCard({
             {isFacturacion && macro.errorSnippet ? macro.errorSnippet : macro.title}
           </h3>
 
-          {/* FACTURACIÓN SPECIFIC LAYOUT */}
-          {isFacturacion ? (
-            <div className="space-y-3 mb-4">
-              {/* Suggested Client Response Container */}
-              <div className="bg-[#FAF9F5] dark:bg-[#0f1520] rounded-xl border border-[#e9e5de] dark:border-[#242f42] p-3.5 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-[#ff5722] dark:text-orange-400">
-                    <FileText className="w-3.5 h-3.5 text-[#ff5722]" />
-                    <span>Respuesta para el cliente</span>
-                  </span>
-                  <span className="text-[10px] font-semibold text-[#697386] dark:text-slate-400 uppercase tracking-wider">
-                    Soporte
-                  </span>
-                </div>
-                <p className="text-xs text-[#172033] dark:text-slate-200 leading-relaxed whitespace-pre-line font-normal">
-                  {macro.text}
-                </p>
+          {/* Unified Client Response Container for all Macros */}
+          <div className="space-y-3 mb-4">
+            <div className="bg-[#FAF9F5] dark:bg-[#0f1520] rounded-xl border border-[#e9e5de] dark:border-[#242f42] p-3.5 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-[#ff5722] dark:text-orange-400">
+                  <FileText className="w-3.5 h-3.5 text-[#ff5722]" />
+                  <span>Respuesta para el cliente</span>
+                </span>
+                <span className="text-[10px] font-semibold text-[#697386] dark:text-slate-400 uppercase tracking-wider">
+                  Soporte
+                </span>
               </div>
+              <p className="text-xs text-[#172033] dark:text-slate-200 leading-relaxed whitespace-pre-line font-normal">
+                {macro.text}
+              </p>
             </div>
-          ) : (
-            /* REGULAR MACROS LAYOUT (Arqueos, Carta digital, Configuración) */
-            <p className="text-xs text-[#697386] dark:text-slate-300 leading-relaxed mb-4 whitespace-pre-line font-normal">
-              {macro.text}
-            </p>
-          )}
+          </div>
 
           {/* Real Image Preview (ONLY when macro.image?.url exists) */}
           {macro.image?.url && (

@@ -33,7 +33,7 @@ export const macroCountryFilters: MacroCountryFilter[] = [
 export interface Macro {
   id: string;
   title: string;
-  category: "arqueos" | "facturacion" | "carta-digital" | "configuracion" | string;
+  category: "arqueos" | "facturacion" | "tu-delivery" | "carta-digital" | "configuracion" | "otros" | string;
   categoryLabel: string;
   categoryColor?: string;
   country?: MacroCountry;
@@ -51,8 +51,9 @@ export const categories: Category[] = [
   { id: "todas", name: "Todas las macros", icon: "LayoutGrid" },
   { id: "arqueos", name: "Arqueos", icon: "WalletCards" },
   { id: "facturacion", name: "Facturación", icon: "ReceiptText" },
-  { id: "carta-digital", name: "Carta Digital", icon: "Smartphone" },
+  { id: "tu-delivery", name: "Tu Delivery", icon: "Bike" },
   { id: "configuracion", name: "Configuración", icon: "Settings" },
+  { id: "otros", name: "Otros", icon: "Layers" },
 ];
 
 export const initialMacros: Macro[] = [

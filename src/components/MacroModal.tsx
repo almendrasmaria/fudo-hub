@@ -28,8 +28,10 @@ export interface MacroModalProps {
 const categoryLabels: Record<string, { label: string; color: string }> = {
   arqueos: { label: "ARQUEOS", color: "purple" },
   facturacion: { label: "FACTURACIÓN", color: "blue" },
-  "carta-digital": { label: "CARTA DIGITAL", color: "emerald" },
+  "tu-delivery": { label: "TU DELIVERY", color: "emerald" },
+  "carta-digital": { label: "TU DELIVERY", color: "emerald" },
   configuracion: { label: "CONFIGURACIÓN", color: "orange" },
+  otros: { label: "OTROS", color: "slate" },
 };
 
 function createPastedImageFile(file: File): File {
@@ -281,7 +283,7 @@ function MacroModalDialog({
             <label className="block text-xs font-bold text-[#172033] dark:text-slate-200 mb-1.5">
               Categoría <span className="text-[#ff5722]">*</span>
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
               {selectableCategories.map((cat) => {
                 const isSelected = category === cat.id;
                 return (
