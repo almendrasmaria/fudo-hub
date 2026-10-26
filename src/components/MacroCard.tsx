@@ -188,18 +188,16 @@ export default function MacroCard({
                 }}
                 title={macro.isFavorite ? "Quitar de favoritas" : "Guardar como favorita"}
                 aria-label={macro.isFavorite ? "Quitar de favoritas" : "Guardar como favorita"}
-                className={`p-1.5 rounded-xl transition-all cursor-pointer active:scale-90 border ${
-                  macro.isFavorite
-                    ? "bg-amber-50 text-amber-500 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 shadow-2xs"
-                    : "border-transparent text-slate-300 hover:text-amber-500 hover:bg-amber-50/60 hover:border-amber-200 dark:text-slate-600 dark:hover:text-amber-400 dark:hover:bg-amber-950/30"
-                }`}
+                className={`p-1.5 rounded-xl transition-all cursor-pointer active:scale-90 border ${macro.isFavorite
+                  ? "bg-amber-50 text-amber-500 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 shadow-2xs"
+                  : "border-transparent text-slate-300 hover:text-amber-500 hover:bg-amber-50/60 hover:border-amber-200 dark:text-slate-600 dark:hover:text-amber-400 dark:hover:bg-amber-950/30"
+                  }`}
               >
                 <Star
-                  className={`w-4 h-4 transition-transform ${
-                    macro.isFavorite
-                      ? "fill-amber-400 text-amber-500 scale-105"
-                      : "stroke-[2]"
-                  }`}
+                  className={`w-4 h-4 transition-transform ${macro.isFavorite
+                    ? "fill-amber-400 text-amber-500 scale-105"
+                    : "stroke-2"
+                    }`}
                 />
               </button>
             )}
@@ -207,9 +205,8 @@ export default function MacroCard({
 
           {/* Card Title */}
           <h3
-            className={`text-base font-bold text-[#172033] dark:text-white mb-2.5 group-hover:text-[#ff5722] transition-colors ${
-              isFacturacion ? "font-extrabold tracking-tight" : ""
-            }`}
+            className={`text-base font-bold text-[#172033] dark:text-white mb-2.5 group-hover:text-[#ff5722] transition-colors ${isFacturacion ? "font-extrabold tracking-tight" : ""
+              }`}
           >
             {isFacturacion && macro.errorSnippet ? macro.errorSnippet : macro.title}
           </h3>
@@ -267,11 +264,10 @@ export default function MacroCard({
                 <button
                   type="button"
                   onClick={handleCopyImage}
-                  className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer active:scale-95 shadow-2xs ${
-                    copiedImage
-                      ? "bg-emerald-50 text-[#3CAD75] border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800"
-                      : "bg-[#fff0e9] text-[#ff5722] border-[#ffd7c5] hover:bg-[#ffe6da] dark:bg-orange-500/15 dark:border-orange-500/30 dark:hover:bg-orange-500/25"
-                  }`}
+                  className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer active:scale-95 shadow-2xs ${copiedImage
+                    ? "bg-emerald-50 text-[#3CAD75] border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800"
+                    : "bg-[#fff0e9] text-[#ff5722] border-[#ffd7c5] hover:bg-[#ffe6da] dark:bg-orange-500/15 dark:border-orange-500/30 dark:hover:bg-orange-500/25"
+                    }`}
                   title="Copiar imagen para pegar directo en WhatsApp o chat"
                 >
                   {copiedImage ? (
@@ -281,7 +277,7 @@ export default function MacroCard({
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5 stroke-[2]" />
+                      <Copy className="w-3.5 h-3.5 stroke-2" />
                       <span>Copiar imagen</span>
                     </>
                   )}

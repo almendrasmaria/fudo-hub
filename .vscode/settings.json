@@ -24,5 +24,14 @@
     "posnet",
     "turbopack"
   ],
-  "cSpell.enableFiletypes": ["typescript", "typescriptreact", "javascript", "javascriptreact", "css", "json", "markdown"]
+  "cSpell.enabledFileTypes": [
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact",
+    "css",
+    "json",
+    "markdown"
+  ],
+  "css.lint.unknownAtRules": "ignore"
 }
