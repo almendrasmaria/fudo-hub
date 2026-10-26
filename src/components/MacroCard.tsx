@@ -46,87 +46,83 @@ export default function MacroCard({
   onEdit,
   onDelete,
 }: MacroCardProps) {
-  const [copied, setCopied] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
+  const [copiedImage, setCopiedImage] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const isFacturacion = macro.category === "facturacion";
-  const hasImage = Boolean(macro.image?.url);
 
-  const handleCopy = async () => {
+  const handleCopyText = async () => {
     try {
-      if (hasImage && macro.image?.url) {
-        const escapedHtml = macro.text
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/\n/g, "<br/>");
+      await navigator.clipboard.writeText(macro.text);
+      setCopiedText(true);
+      setTimeout(() => setCopiedText(false), 2000);
+    } catch (err) {
+      console.error("Error al copiar texto:", err);
+    }
+  };
 
-        const htmlContent = `<div><p style="white-space: pre-wrap; margin-bottom: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #172033;">${escapedHtml}</p><p><img src="${macro.image.url}" alt="${macro.image.name || 'Captura adjunta'}" style="max-width: 100%; height: auto; border-radius: 8px;" /></p></div>`;
+  const handleCopyImage = async () => {
+    try {
+      if (!macro.image?.url) return;
 
-        let wroteRich = false;
+      let pngBlob: Blob | null = null;
 
-        if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
-          try {
-            let imageBlob: Blob | null = null;
-            try {
-              const res = await fetch(macro.image.url);
-              if (res.ok) {
-                const b = await res.blob();
-                if (b.type === "image/png") {
-                  imageBlob = b;
-                }
-              }
-            } catch {
-              // Ignore cross-origin issues
-            }
+      // Convert image to PNG blob via canvas so clipboard write never fails
+      try {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject();
+          img.src = macro.image!.url!;
+        });
 
-            const clipboardData: Record<string, Blob> = {
-              "text/plain": new Blob([macro.text], { type: "text/plain" }),
-              "text/html": new Blob([htmlContent], { type: "text/html" }),
-            };
-
-            if (imageBlob) {
-              try {
-                await navigator.clipboard.write([
-                  new ClipboardItem({
-                    ...clipboardData,
-                    "image/png": imageBlob,
-                  }),
-                ]);
-                wroteRich = true;
-              } catch {
-                // If browser rejects mixed types, fallback to text/html + text/plain
-              }
-            }
-
-            if (!wroteRich) {
-              await navigator.clipboard.write([
-                new ClipboardItem(clipboardData),
-              ]);
-              wroteRich = true;
-            }
-          } catch (writeErr) {
-            console.warn("navigator.clipboard.write con HTML falló, usando writeText:", writeErr);
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          pngBlob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob((b) => resolve(b), "image/png")
+          );
+        }
+      } catch {
+        // Fallback: fetch blob directly
+        try {
+          const res = await fetch(macro.image.url);
+          const rawBlob = await res.blob();
+          if (rawBlob.type === "image/png") {
+            pngBlob = rawBlob;
           }
+        } catch {
+          // ignore
         }
-
-        if (!wroteRich) {
-          await navigator.clipboard.writeText(macro.text);
-        }
-      } else {
-        await navigator.clipboard.writeText(macro.text);
       }
 
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
+      if (pngBlob) {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "image/png": pngBlob,
+          }),
+        ]);
+        setCopiedImage(true);
+        setTimeout(() => setCopiedImage(false), 2000);
+      } else {
+        // Fallback to text copy of image URL
+        await navigator.clipboard.writeText(macro.image.url);
+        setCopiedImage(true);
+        setTimeout(() => setCopiedImage(false), 2000);
+      }
     } catch (err) {
-      console.error("Error al copiar macro:", err);
+      console.error("Error al copiar imagen:", err);
       try {
-        await navigator.clipboard.writeText(macro.text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2200);
+        await navigator.clipboard.writeText(macro.image?.url || `[Imagen: ${macro.image?.name}]`);
+        setCopiedImage(true);
+        setTimeout(() => setCopiedImage(false), 2000);
       } catch (fallbackErr) {
-        console.error("Fallback crítico falló:", fallbackErr);
+        console.error("Error crítico al copiar imagen:", fallbackErr);
       }
     }
   };
@@ -237,10 +233,30 @@ export default function MacroCard({
                     <span className="text-slate-400 shrink-0">({macro.image.size})</span>
                   )}
                 </div>
-                <div className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800/60">
-                  <Check className="w-3 h-3" />
-                  <span>Se copia con el texto</span>
-                </div>
+
+                {/* Copiar imagen button */}
+                <button
+                  type="button"
+                  onClick={handleCopyImage}
+                  className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer active:scale-95 shadow-2xs ${
+                    copiedImage
+                      ? "bg-emerald-50 text-[#3CAD75] border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800"
+                      : "bg-[#fff0e9] text-[#ff5722] border-[#ffd7c5] hover:bg-[#ffe6da] dark:bg-orange-500/15 dark:border-orange-500/30 dark:hover:bg-orange-500/25"
+                  }`}
+                  title="Copiar imagen para pegar directo en WhatsApp o chat"
+                >
+                  {copiedImage ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-[#3CAD75] stroke-[2.5]" />
+                      <span className="text-[#3CAD75] font-bold">¡Imagen copiada!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 stroke-[2]" />
+                      <span>Copiar imagen</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           )}
@@ -277,19 +293,13 @@ export default function MacroCard({
             </Button>
 
             <Button
-              variant={copied ? "success" : "primary"}
+              variant={copiedText ? "success" : "primary"}
               size="sm"
-              icon={copied ? Check : Copy}
-              onClick={handleCopy}
-              title={hasImage ? "Copia el texto y la captura adjunta juntos" : "Copia el texto de la macro"}
+              icon={copiedText ? Check : Copy}
+              onClick={handleCopyText}
+              title="Copiar respuesta de texto"
             >
-              {copied
-                ? hasImage
-                  ? "¡Texto e imagen copiados!"
-                  : "¡Copiado!"
-                : hasImage
-                ? "Copiar (con imagen)"
-                : "Copiar"}
+              {copiedText ? "¡Texto copiado!" : "Copiar texto"}
             </Button>
           </div>
         </div>
