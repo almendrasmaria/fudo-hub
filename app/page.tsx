@@ -113,29 +113,42 @@ export default function Home() {
         const list = data && data.length > 0 ? data : initialMacros;
         let savedFavs: string[] | null = null;
         let savedMines: string[] = [];
+        let savedDeleted: string[] = [];
 
         try {
           const favStr = localStorage.getItem("fudo-macro-favorites");
           if (favStr) savedFavs = JSON.parse(favStr);
           const mineStr = localStorage.getItem("fudo-my-macros");
           if (mineStr) savedMines = JSON.parse(mineStr);
+          const delStr = localStorage.getItem("fudo-deleted-macros");
+          if (delStr) savedDeleted = JSON.parse(delStr);
         } catch {
           // ignore
         }
+
+        const excludedIds = new Set([
+          ...savedDeleted,
+          "macro-1",
+          "macro-3",
+          "macro-4",
+          "macro-5",
+        ]);
+
+        const filteredList = list.filter((m) => !excludedIds.has(m.id));
 
         setMyMacroIds(savedMines);
 
         if (savedFavs) {
           const favSet = new Set(savedFavs);
-          setMacros(list.map((m) => ({ ...m, isFavorite: favSet.has(m.id) })));
+          setMacros(filteredList.map((m) => ({ ...m, isFavorite: favSet.has(m.id) })));
         } else {
-          const defaultFavs = list.filter((m) => m.isFavorite).map((m) => m.id);
+          const defaultFavs = filteredList.filter((m) => m.isFavorite).map((m) => m.id);
           try {
             localStorage.setItem("fudo-macro-favorites", JSON.stringify(defaultFavs));
           } catch {
             // ignore
           }
-          setMacros(list);
+          setMacros(filteredList);
         }
       }
     });
@@ -322,6 +335,20 @@ export default function Home() {
     } catch (err) {
       console.error("Error al eliminar macro de Supabase:", err);
     }
+
+    try {
+      const saved = localStorage.getItem("fudo-deleted-macros");
+      const deleted: string[] = saved ? JSON.parse(saved) : [];
+      if (!deleted.includes(macroId)) {
+        localStorage.setItem(
+          "fudo-deleted-macros",
+          JSON.stringify([...deleted, macroId])
+        );
+      }
+    } catch {
+      // ignore
+    }
+
     setMacros((prev) => prev.filter((m) => m.id !== macroId));
     if (editingMacro?.id === macroId) {
       setIsModalOpen(false);
