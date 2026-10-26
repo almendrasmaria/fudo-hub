@@ -429,7 +429,7 @@ function MacroModalDialog({
                     Captura adjunta (Opcional)
                   </label>
                   <span className="text-[11px] text-[#697386] dark:text-slate-400">
-                    PNG, JPG, WEBP o Ctrl+V
+                    PNG, JPG, WEBP, GIF o Ctrl+V
                   </span>
                 </div>
 
