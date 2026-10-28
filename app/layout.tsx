@@ -10,7 +10,7 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "Fudo Hub | Centro de Soporte",
-  description: "Centro integral de soporte, facturación electrónica, integraciones delivery, impresoras y macros para Fudo",
+  description: "Centro de macros, impresoras y derivaciones para Fudo",
 };
 
 export default function RootLayout({

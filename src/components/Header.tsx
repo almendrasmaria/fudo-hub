@@ -6,8 +6,8 @@ import { Sun, Moon, ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-r
 export interface HeaderProps {
   onNewMacro?: () => void;
   onOpenRecent?: () => void;
-  activeView?: "macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion";
-  onSelectView?: (view: "macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion") => void;
+  activeView?: "macros" | "impresoras" | "derivaciones";
+  onSelectView?: (view: "macros" | "impresoras" | "derivaciones") => void;
   isSidebarOpen?: boolean;
   onToggleSidebar?: () => void;
 }
@@ -108,10 +108,6 @@ export default function Header({
             ? "Derivaciones"
             : activeView === "impresoras"
             ? "Compatibilidad de impresoras"
-            : activeView === "integraciones"
-            ? "Integraciones"
-            : activeView === "facturacion"
-            ? "Facturación electrónica"
             : "Macros"}
         </span>
       </div>

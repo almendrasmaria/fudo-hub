@@ -6,23 +6,19 @@ import {
   LayoutGrid,
   ArrowRightLeft,
   Printer,
-  Cable,
-  ReceiptText,
   PanelLeftClose,
 } from "lucide-react";
 import { Category } from "@/src/data/macros";
 import { printersData } from "@/src/data/impresoras";
 import { teamList } from "@/src/data/derivaciones";
-import { platforms } from "@/src/data/integraciones";
-import { invoiceIssues } from "@/src/data/facturacion";
 
 export interface SidebarProps {
   categories?: Category[];
   selectedCategory?: string;
   onSelectCategory?: (categoryId: string) => void;
   categoryCounts?: Record<string, number>;
-  activeView?: "macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion";
-  onSelectView?: (view: "macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion") => void;
+  activeView?: "macros" | "impresoras" | "derivaciones";
+  onSelectView?: (view: "macros" | "impresoras" | "derivaciones") => void;
   isOpen?: boolean;
   onClose?: () => void;
   onToggle?: () => void;
@@ -45,18 +41,8 @@ export default function Sidebar({
     if (typeof window !== "undefined" && window.innerWidth < 768 && onClose) onClose();
   };
 
-  const handleIntegracionesClick = () => {
-    if (onSelectView) onSelectView("integraciones");
-    if (typeof window !== "undefined" && window.innerWidth < 768 && onClose) onClose();
-  };
-
   const handleImpresorasClick = () => {
     if (onSelectView) onSelectView("impresoras");
-    if (typeof window !== "undefined" && window.innerWidth < 768 && onClose) onClose();
-  };
-
-  const handleFacturacionClick = () => {
-    if (onSelectView) onSelectView("facturacion");
     if (typeof window !== "undefined" && window.innerWidth < 768 && onClose) onClose();
   };
 
@@ -158,35 +144,6 @@ export default function Sidebar({
           </div>
 
           <nav className="space-y-1">
-            {/* Integraciones Nav Item */}
-            <button
-              type="button"
-              onClick={handleIntegracionesClick}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
-                activeView === "integraciones"
-                  ? "bg-[#fff0e9] text-[#ff5722] shadow-2xs font-bold"
-                  : "text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033]"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Cable
-                  className={`w-4 h-4 ${
-                    activeView === "integraciones" ? "text-[#ff5722]" : "text-[#697386]"
-                  }`}
-                />
-                <span>Integraciones</span>
-              </div>
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                  activeView === "integraciones"
-                    ? "bg-[#ffd7c5] text-[#e94817]"
-                    : "bg-[#FAF8F3] text-[#697386] border border-[#e9e5de]"
-                }`}
-              >
-                {platforms.length}
-              </span>
-            </button>
-
             {/* Impresoras Nav Item */}
             <button
               type="button"
@@ -213,35 +170,6 @@ export default function Sidebar({
                 }`}
               >
                 {printersData.length}
-              </span>
-            </button>
-
-            {/* Facturación Nav Item in Sidebar */}
-            <button
-              type="button"
-              onClick={handleFacturacionClick}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
-                activeView === "facturacion"
-                  ? "bg-[#fff0e9] text-[#ff5722] shadow-2xs font-bold"
-                  : "text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033]"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <ReceiptText
-                  className={`w-4 h-4 ${
-                    activeView === "facturacion" ? "text-[#ff5722]" : "text-[#697386]"
-                  }`}
-                />
-                <span>Facturación</span>
-              </div>
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                  activeView === "facturacion"
-                    ? "bg-[#ffd7c5] text-[#e94817]"
-                    : "bg-[#FAF8F3] text-[#697386] border border-[#e9e5de]"
-                }`}
-              >
-                {invoiceIssues.length}
               </span>
             </button>
 

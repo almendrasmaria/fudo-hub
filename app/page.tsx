@@ -7,9 +7,7 @@ import SearchHero from "@/src/components/SearchHero";
 import MacroCard from "@/src/components/MacroCard";
 import MacroModal from "@/src/components/MacroModal";
 import DerivacionesView from "@/src/components/DerivacionesView";
-import IntegracionesView from "@/src/components/IntegracionesView";
 import ImpresorasView from "@/src/components/ImpresorasView";
-import FacturacionView from "@/src/components/FacturacionView";
 import Button from "@/src/components/ui/Button";
 import Pagination from "@/src/components/ui/Pagination";
 import ToastContainer, { ToastMessage, ToastType } from "@/src/components/ui/Toast";
@@ -53,7 +51,7 @@ function updateSidebarState(open: boolean) {
 }
 
 export default function Home() {
-  const [activeView, setActiveView] = useState<"macros" | "integraciones" | "impresoras" | "derivaciones" | "facturacion">("facturacion");
+  const [activeView, setActiveView] = useState<"macros" | "impresoras" | "derivaciones">("macros");
   const [macros, setMacros] = useState<Macro[]>(initialMacros);
   const [selectedCategory, setSelectedCategory] = useState<string>("todas");
   const [selectedCountry, setSelectedCountry] = useState<string>("todos");
@@ -97,8 +95,6 @@ export default function Home() {
 
   React.useEffect(() => {
     const titles: Record<string, string> = {
-      facturacion: "Fudo Hub | Facturación Electrónica",
-      integraciones: "Fudo Hub | Integraciones Delivery",
       impresoras: "Fudo Hub | Compatibilidad de Impresoras",
       derivaciones: "Fudo Hub | Criterios de Derivación",
       macros: "Fudo Hub | Macros",
@@ -393,14 +389,8 @@ export default function Home() {
           <div className="max-w-7xl w-full mx-auto">
             {activeView === "derivaciones" ? (
               <DerivacionesView />
-            ) : activeView === "integraciones" ? (
-              <IntegracionesView
-                onGoToDerivaciones={() => setActiveView("derivaciones")}
-              />
             ) : activeView === "impresoras" ? (
               <ImpresorasView />
-            ) : activeView === "facturacion" ? (
-              <FacturacionView />
             ) : (
               <>
                 <SearchHero
