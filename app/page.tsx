@@ -11,6 +11,8 @@ import ImpresorasView from "@/src/components/ImpresorasView";
 import Button from "@/src/components/ui/Button";
 import Pagination from "@/src/components/ui/Pagination";
 import ToastContainer, { ToastMessage, ToastType } from "@/src/components/ui/Toast";
+import LoginView from "@/src/components/LoginView";
+import { User, getStoredUser, setStoredUser, clearStoredUser } from "@/src/lib/auth";
 import { categories, initialMacros, Macro } from "@/src/data/macros";
 import { getMacros, saveMacro, deleteMacro } from "@/src/lib/macrosService";
 import { SearchX, Star } from "lucide-react";
@@ -32,6 +34,8 @@ export default function Home() {
   const [editingMacro, setEditingMacro] = useState<Macro | null>(null);
   const [myMacroIds, setMyMacroIds] = useState<string[]>([]);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState<boolean>(false);
 
   const addToast = (type: ToastType, title: string, message?: string) => {
     setToasts((prev) => {
@@ -49,6 +53,30 @@ export default function Home() {
   };
 
 
+
+  React.useEffect(() => {
+    const user = getStoredUser();
+    if (user) {
+      setCurrentUser(user);
+    }
+    setIsAuthChecked(true);
+  }, []);
+
+  const handleLoginSuccess = (user: User) => {
+    setStoredUser(user);
+    setCurrentUser(user);
+    addToast(
+      "success",
+      `¡Bienvenido/a, ${user.name}!`,
+      `Iniciaste sesión con el rol de ${user.role === "admin" ? "Administrador" : "Agente"}.`
+    );
+  };
+
+  const handleLogout = () => {
+    clearStoredUser();
+    setCurrentUser(null);
+    addToast("info", "Sesión cerrada", "Has cerrado sesión correctamente.");
+  };
 
   React.useEffect(() => {
     const titles: Record<string, string> = {
@@ -318,8 +346,21 @@ export default function Home() {
     );
   };
 
+  if (!isAuthChecked) {
+    return null;
+  }
+
+  if (!currentUser) {
+    return (
+      <>
+        <LoginView onLoginSuccess={handleLoginSuccess} />
+        <ToastContainer toasts={toasts} onDismiss={removeToast} />
+      </>
+    );
+  }
+
   return (
-    <div className="flex h-screen overflow-hidden bg-[#faf8f3] text-[#172033]">
+    <div className="flex h-screen overflow-hidden bg-[#faf8f3] dark:bg-[#0f141c] text-[#172033] dark:text-slate-100">
       <Sidebar
         categories={categories}
         selectedCategory={selectedCategory}
@@ -335,6 +376,8 @@ export default function Home() {
           onOpenRecent={handleOpenRecent}
           activeView={activeView}
           onSelectView={setActiveView}
+          currentUser={currentUser}
+          onLogout={handleLogout}
         />
 
         <main className="flex-1 overflow-y-auto p-6 sm:p-8">
@@ -450,6 +493,7 @@ export default function Home() {
         onDelete={handleDeleteMacro}
         initialData={editingMacro}
         categories={categories}
+        currentUserRole={currentUser?.role}
       />
 
       <ToastContainer toasts={toasts} onDismiss={removeToast} />

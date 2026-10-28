@@ -10,6 +10,7 @@ import {
   Trash2,
   Pencil,
   Check,
+  CheckCircle2,
   Loader2,
 } from "lucide-react";
 import Button from "@/src/components/ui/Button";
@@ -23,6 +24,7 @@ export interface MacroModalProps {
   onDelete?: (macroId: string) => void;
   initialData?: Macro | null;
   categories: Category[];
+  currentUserRole?: "admin" | "agente";
 }
 
 const categoryLabels: Record<string, { label: string; color: string }> = {
@@ -56,6 +58,7 @@ function MacroModalDialog({
   onDelete,
   initialData,
   categories,
+  currentUserRole = "agente",
 }: Omit<MacroModalProps, "isOpen">) {
   const selectableCategories = categories.filter((c) => c.id !== "todas");
 
@@ -195,7 +198,7 @@ function MacroModalDialog({
       updatedAt: initialData ? initialData.updatedAt : "recién",
       isShared,
       shareStatus: isShared
-        ? initialData?.shareStatus === "approved"
+        ? currentUserRole === "admin" || initialData?.shareStatus === "approved"
           ? "approved"
           : "pending"
         : "private",
@@ -499,10 +502,17 @@ function MacroModalDialog({
                       Compartir con el equipo
                     </span>
                     {isShared ? (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60">
-                        <Clock className="w-3 h-3 text-amber-600 dark:text-amber-300 shrink-0" />
-                        <span>Pasa a revisión de Admin</span>
-                      </span>
+                      currentUserRole === "admin" ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          <span>Aprobada (Admin)</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60">
+                          <Clock className="w-3 h-3 text-amber-600 dark:text-amber-300 shrink-0" />
+                          <span>Pasa a revisión de Admin</span>
+                        </span>
+                      )
                     ) : (
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200/80 text-slate-700 dark:bg-slate-800 dark:text-slate-400">
                         Macro personal
@@ -511,7 +521,9 @@ function MacroModalDialog({
                   </div>
                   <p className="text-[11px] text-[#697386] dark:text-slate-400 leading-relaxed">
                     {isShared
-                      ? "Se enviará al Administrador para su validación. Una vez aprobada, se publicará para todos los operadores de soporte."
+                      ? currentUserRole === "admin"
+                        ? "Como administrador, la macro quedará aprobada y publicada de inmediato para todos los agentes de soporte."
+                        : "Se enviará al Administrador para su validación. Una vez aprobada, se publicará para todos los operadores de soporte."
                       : "Solo estará visible en tu biblioteca privada. Activá esta opción si considerás que puede servir a todo el equipo."}
                   </p>
                 </div>
