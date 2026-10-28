@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useSyncExternalStore } from "react";
+import React, { useState, useMemo } from "react";
 import Sidebar from "@/src/components/Sidebar";
 import Header from "@/src/components/Header";
 import SearchHero from "@/src/components/SearchHero";
@@ -17,38 +17,7 @@ import { SearchX, Star } from "lucide-react";
 
 const ITEMS_PER_PAGE = 8;
 
-const sidebarListeners = new Set<() => void>();
 
-function subscribeSidebar(callback: () => void) {
-  sidebarListeners.add(callback);
-  window.addEventListener("resize", callback);
-  window.addEventListener("storage", callback);
-  return () => {
-    sidebarListeners.delete(callback);
-    window.removeEventListener("resize", callback);
-    window.removeEventListener("storage", callback);
-  };
-}
-
-function getSidebarSnapshot(): boolean {
-  if (typeof window === "undefined") return true;
-  const saved = localStorage.getItem("fudo-sidebar-open");
-  if (saved !== null) {
-    return saved === "true";
-  }
-  return window.innerWidth >= 1024;
-}
-
-function getServerSidebarSnapshot(): boolean {
-  return true;
-}
-
-function updateSidebarState(open: boolean) {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("fudo-sidebar-open", String(open));
-    sidebarListeners.forEach((listener) => listener());
-  }
-}
 
 export default function Home() {
   const [activeView, setActiveView] = useState<"macros" | "impresoras" | "derivaciones">("macros");
@@ -79,19 +48,7 @@ export default function Home() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const isSidebarOpen = useSyncExternalStore(
-    subscribeSidebar,
-    getSidebarSnapshot,
-    getServerSidebarSnapshot
-  );
 
-  const toggleSidebar = () => {
-    updateSidebarState(!isSidebarOpen);
-  };
-
-  const closeSidebar = () => {
-    updateSidebarState(false);
-  };
 
   React.useEffect(() => {
     const titles: Record<string, string> = {
@@ -370,9 +327,6 @@ export default function Home() {
         categoryCounts={categoryCounts}
         activeView={activeView}
         onSelectView={setActiveView}
-        isOpen={isSidebarOpen}
-        onClose={closeSidebar}
-        onToggle={toggleSidebar}
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
@@ -381,8 +335,6 @@ export default function Home() {
           onOpenRecent={handleOpenRecent}
           activeView={activeView}
           onSelectView={setActiveView}
-          isSidebarOpen={isSidebarOpen}
-          onToggleSidebar={toggleSidebar}
         />
 
         <main className="flex-1 overflow-y-auto p-6 sm:p-8">
