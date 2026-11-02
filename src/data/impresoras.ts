@@ -15,6 +15,17 @@ export interface PrinterModel {
   pdf417Chile: CompatibilityStatus;
   recommendedFudo: CompatibilityStatus;
   notes?: string;
+  hasSelfTest?: boolean;
+  selfTestImageUrl?: string;
+  selfTestImageName?: string;
+  purchaseUrl?: string;
+  status?: "pending" | "approved";
+  submittedBy?: {
+    name: string;
+    role: "admin" | "agente";
+    date?: string;
+  };
+  createdAt?: string;
 }
 
 export const statusLabels: Record<CompatibilityStatus, string> = {

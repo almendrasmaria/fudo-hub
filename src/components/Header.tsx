@@ -86,7 +86,7 @@ export default function Header({
             : activeView === "impresoras"
             ? "Compatibilidad de impresoras"
             : activeView === "solicitudes"
-            ? "Aprobaciones de macros"
+            ? "Aprobaciones"
             : "Macros"}
         </span>
       </div>

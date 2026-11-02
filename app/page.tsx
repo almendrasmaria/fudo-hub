@@ -16,6 +16,13 @@ import AdminApprovalsView from "@/src/components/AdminApprovalsView";
 import { User, getStoredUser, setStoredUser, clearStoredUser } from "@/src/lib/auth";
 import { categories, initialMacros, Macro } from "@/src/data/macros";
 import { getMacros, saveMacro, deleteMacro } from "@/src/lib/macrosService";
+import { PrinterModel } from "@/src/data/impresoras";
+import {
+  getCustomPrinters,
+  approvePrinterModel,
+  deletePrinterModel,
+  savePrinterModel,
+} from "@/src/lib/impresorasService";
 import { SearchX, Star } from "lucide-react";
 
 const ITEMS_PER_PAGE = 8;
@@ -37,6 +44,15 @@ export default function Home() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthChecked, setIsAuthChecked] = useState<boolean>(false);
+  const [customPrinters, setCustomPrinters] = useState<PrinterModel[]>([]);
+
+  React.useEffect(() => {
+    setCustomPrinters(getCustomPrinters());
+  }, []);
+
+  const refreshPrinters = () => {
+    setCustomPrinters(getCustomPrinters());
+  };
 
   const addToast = (type: ToastType, title: string, message?: string) => {
     setToasts((prev) => {
@@ -83,15 +99,51 @@ export default function Home() {
     const titles: Record<string, string> = {
       impresoras: "Fudo Hub | Compatibilidad de Impresoras",
       derivaciones: "Fudo Hub | Criterios de Derivación",
-      solicitudes: "Fudo Hub | Aprobaciones de Macros",
+      solicitudes: "Fudo Hub | Aprobaciones",
       macros: "Fudo Hub | Macros",
     };
     document.title = titles[activeView] || "Fudo Hub | Centro de Soporte";
   }, [activeView]);
 
-  const pendingApprovalCount = useMemo(() => {
+  const pendingMacroCount = useMemo(() => {
     return macros.filter((m) => m.shareStatus === "pending").length;
   }, [macros]);
+
+  const pendingPrinterCount = useMemo(() => {
+    return customPrinters.filter((p) => p.status === "pending").length;
+  }, [customPrinters]);
+
+  const pendingApprovalCount = pendingMacroCount + pendingPrinterCount;
+
+  const handleApprovePrinter = (printer: PrinterModel) => {
+    approvePrinterModel(printer.id);
+    refreshPrinters();
+    addToast(
+      "success",
+      "Impresora aprobada y publicada",
+      `"${printer.brand} ${printer.model}" ahora está disponible para todo el equipo.`
+    );
+  };
+
+  const handleDiscardPrinter = (printer: PrinterModel) => {
+    deletePrinterModel(printer.id);
+    refreshPrinters();
+    addToast(
+      "info",
+      "Propuesta de impresora descartada",
+      `"${printer.brand} ${printer.model}" fue removida.`
+    );
+  };
+
+  const handleSavePrinter = async (printer: PrinterModel, file?: File | null) => {
+    await savePrinterModel(printer, file);
+    refreshPrinters();
+    addToast(
+      "success",
+      "Impresora actualizada",
+      `"${printer.brand} ${printer.model}" fue actualizada correctamente.`
+    );
+  };
 
   const handleApproveMacro = async (macro: Macro) => {
     const updated: Macro = {
@@ -428,7 +480,11 @@ export default function Home() {
             {activeView === "derivaciones" ? (
               <DerivacionesView />
             ) : activeView === "impresoras" ? (
-              <ImpresorasView />
+              <ImpresorasView
+                currentUser={currentUser}
+                onShowToast={addToast}
+                onCustomPrintersChange={refreshPrinters}
+              />
             ) : activeView === "solicitudes" ? (
               <AdminApprovalsView
                 macros={macros}
@@ -436,6 +492,11 @@ export default function Home() {
                 onDiscard={handleDiscardMacro}
                 onEdit={handleEdit}
                 onGoToMacros={() => setActiveView("macros")}
+                customPrinters={customPrinters}
+                onApprovePrinter={handleApprovePrinter}
+                onDiscardPrinter={handleDiscardPrinter}
+                onSavePrinter={handleSavePrinter}
+                onGoToPrinters={() => setActiveView("impresoras")}
               />
             ) : (
               <>
