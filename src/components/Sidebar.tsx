@@ -6,6 +6,7 @@ import {
   LayoutGrid,
   ArrowRightLeft,
   Printer,
+  ClipboardCheck,
 } from "lucide-react";
 import { Category } from "@/src/data/macros";
 import { printersData } from "@/src/data/impresoras";
@@ -16,8 +17,10 @@ export interface SidebarProps {
   selectedCategory?: string;
   onSelectCategory?: (categoryId: string) => void;
   categoryCounts?: Record<string, number>;
-  activeView?: "macros" | "impresoras" | "derivaciones";
-  onSelectView?: (view: "macros" | "impresoras" | "derivaciones") => void;
+  activeView?: "macros" | "impresoras" | "derivaciones" | "solicitudes";
+  onSelectView?: (view: "macros" | "impresoras" | "derivaciones" | "solicitudes") => void;
+  currentUserRole?: "admin" | "agente";
+  pendingApprovalCount?: number;
 }
 
 export default function Sidebar({
@@ -25,6 +28,8 @@ export default function Sidebar({
   activeView = "macros",
   onSelectView,
   onSelectCategory,
+  currentUserRole,
+  pendingApprovalCount = 0,
 }: SidebarProps) {
   const totalMacros = categoryCounts?.["todas"] ?? 6;
 
@@ -39,6 +44,10 @@ export default function Sidebar({
 
   const handleDerivacionesClick = () => {
     if (onSelectView) onSelectView("derivaciones");
+  };
+
+  const handleSolicitudesClick = () => {
+    if (onSelectView) onSelectView("solicitudes");
   };
 
   return (
@@ -165,6 +174,50 @@ export default function Sidebar({
             </button>
           </nav>
         </div>
+
+        {/* Section 3: Administración (Solo visible para rol admin) */}
+        {currentUserRole === "admin" && (
+          <div className="pt-4 border-t border-[#e9e5de] dark:border-[#242f42]">
+            <div className="mb-2 px-2 flex items-center justify-between">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#ff5722]">
+                Administración
+              </p>
+            </div>
+
+            <nav className="space-y-1">
+              {/* Solicitudes de Aprobación Nav Item */}
+              <button
+                type="button"
+                onClick={handleSolicitudesClick}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
+                  activeView === "solicitudes"
+                    ? "bg-[#fff0e9] text-[#ff5722] shadow-2xs font-bold"
+                    : "text-[#697386] hover:bg-[#FAF8F3] hover:text-[#172033]"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <ClipboardCheck
+                    className={`w-4 h-4 ${
+                      activeView === "solicitudes" ? "text-[#ff5722]" : "text-[#697386]"
+                    }`}
+                  />
+                  <span>Aprobaciones</span>
+                </div>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-bold transition-all ${
+                    activeView === "solicitudes"
+                      ? "bg-[#ffd7c5] text-[#e94817]"
+                      : pendingApprovalCount > 0
+                      ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 font-extrabold ring-1 ring-amber-300"
+                      : "bg-[#FAF8F3] text-[#697386] border border-[#e9e5de]"
+                  }`}
+                >
+                  {pendingApprovalCount}
+                </span>
+              </button>
+            </nav>
+          </div>
+        )}
       </div>
     </aside>
   );

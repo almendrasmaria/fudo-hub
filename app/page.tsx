@@ -12,6 +12,7 @@ import Button from "@/src/components/ui/Button";
 import Pagination from "@/src/components/ui/Pagination";
 import ToastContainer, { ToastMessage, ToastType } from "@/src/components/ui/Toast";
 import LoginView from "@/src/components/LoginView";
+import AdminApprovalsView from "@/src/components/AdminApprovalsView";
 import { User, getStoredUser, setStoredUser, clearStoredUser } from "@/src/lib/auth";
 import { categories, initialMacros, Macro } from "@/src/data/macros";
 import { getMacros, saveMacro, deleteMacro } from "@/src/lib/macrosService";
@@ -22,7 +23,7 @@ const ITEMS_PER_PAGE = 8;
 
 
 export default function Home() {
-  const [activeView, setActiveView] = useState<"macros" | "impresoras" | "derivaciones">("macros");
+  const [activeView, setActiveView] = useState<"macros" | "impresoras" | "derivaciones" | "solicitudes">("macros");
   const [macros, setMacros] = useState<Macro[]>(initialMacros);
   const [selectedCategory, setSelectedCategory] = useState<string>("todas");
   const [selectedCountry, setSelectedCountry] = useState<string>("todos");
@@ -82,10 +83,35 @@ export default function Home() {
     const titles: Record<string, string> = {
       impresoras: "Fudo Hub | Compatibilidad de Impresoras",
       derivaciones: "Fudo Hub | Criterios de Derivación",
+      solicitudes: "Fudo Hub | Aprobaciones de Macros",
       macros: "Fudo Hub | Macros",
     };
     document.title = titles[activeView] || "Fudo Hub | Centro de Soporte";
   }, [activeView]);
+
+  const pendingApprovalCount = useMemo(() => {
+    return macros.filter((m) => m.shareStatus === "pending").length;
+  }, [macros]);
+
+  const handleApproveMacro = async (macro: Macro) => {
+    const updated: Macro = {
+      ...macro,
+      isShared: true,
+      shareStatus: "approved",
+      updatedAt: "recién",
+    };
+    const saved = await saveMacro(updated);
+    setMacros((prev) => prev.map((m) => (m.id === saved.id ? saved : m)));
+    addToast(
+      "success",
+      "Macro aprobada y publicada",
+      `"${saved.title}" ahora está disponible para todos los operadores de soporte.`
+    );
+  };
+
+  const handleDiscardMacro = async (macro: Macro) => {
+    await handleDeleteMacro(macro.id);
+  };
 
   React.useEffect(() => {
     let isMounted = true;
@@ -368,6 +394,8 @@ export default function Home() {
         categoryCounts={categoryCounts}
         activeView={activeView}
         onSelectView={setActiveView}
+        currentUserRole={currentUser?.role}
+        pendingApprovalCount={pendingApprovalCount}
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
@@ -386,6 +414,14 @@ export default function Home() {
               <DerivacionesView />
             ) : activeView === "impresoras" ? (
               <ImpresorasView />
+            ) : activeView === "solicitudes" ? (
+              <AdminApprovalsView
+                macros={macros}
+                onApprove={handleApproveMacro}
+                onDiscard={handleDiscardMacro}
+                onEdit={handleEdit}
+                onGoToMacros={() => setActiveView("macros")}
+              />
             ) : (
               <>
                 <SearchHero

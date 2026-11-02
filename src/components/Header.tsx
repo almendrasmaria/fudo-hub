@@ -7,8 +7,8 @@ import { User } from "@/src/lib/auth";
 export interface HeaderProps {
   onNewMacro?: () => void;
   onOpenRecent?: () => void;
-  activeView?: "macros" | "impresoras" | "derivaciones";
-  onSelectView?: (view: "macros" | "impresoras" | "derivaciones") => void;
+  activeView?: "macros" | "impresoras" | "derivaciones" | "solicitudes";
+  onSelectView?: (view: "macros" | "impresoras" | "derivaciones" | "solicitudes") => void;
   currentUser?: User | null;
   onLogout?: () => void;
 }
@@ -85,6 +85,8 @@ export default function Header({
             ? "Derivaciones"
             : activeView === "impresoras"
             ? "Compatibilidad de impresoras"
+            : activeView === "solicitudes"
+            ? "Aprobaciones de macros"
             : "Macros"}
         </span>
       </div>
