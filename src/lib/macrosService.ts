@@ -65,7 +65,7 @@ function mapRowToMacro(row: MacroRow): Macro {
       : "recientemente",
     isFavorite: Boolean(row.is_favorite),
     isShared: Boolean(row.is_shared),
-    shareStatus: (row.share_status as MacroShareStatus) || "private",
+    shareStatus: (row.share_status as MacroShareStatus) || (row.is_shared ? "approved" : "private"),
   };
 }
 

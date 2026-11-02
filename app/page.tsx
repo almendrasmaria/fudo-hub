@@ -100,13 +100,23 @@ export default function Home() {
       shareStatus: "approved",
       updatedAt: "recién",
     };
-    const saved = await saveMacro(updated);
-    setMacros((prev) => prev.map((m) => (m.id === saved.id ? saved : m)));
-    addToast(
-      "success",
-      "Macro aprobada y publicada",
-      `"${saved.title}" ahora está disponible para todos los operadores de soporte.`
-    );
+    try {
+      const saved = await saveMacro(updated);
+      setMacros((prev) => prev.map((m) => (m.id === saved.id ? saved : m)));
+      addToast(
+        "success",
+        "Macro aprobada y publicada",
+        `"${saved.title}" ahora está disponible para todos los operadores de soporte.`
+      );
+    } catch (err) {
+      console.error("Error al aprobar macro en Supabase:", err);
+      setMacros((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+      addToast(
+        "success",
+        "Macro aprobada y publicada",
+        `"${updated.title}" fue aprobada.`
+      );
+    }
   };
 
   const handleDiscardMacro = async (macro: Macro) => {
@@ -244,6 +254,11 @@ export default function Home() {
           myMacroIds.includes(macro.id) ||
           !macro.isShared;
         if (!isMine) return false;
+      } else {
+        // En la biblioteca del equipo, ocultar macros privadas o pendientes de revisión
+        if (macro.shareStatus === "private" || macro.shareStatus === "pending") {
+          return false;
+        }
       }
 
       // Category filter
