@@ -74,15 +74,14 @@ export default function SearchHero({
         </div>
 
         {onNewMacro && (
-          <Button
-            variant="primary"
-            size="md"
-            icon={Plus}
+          <button
+            type="button"
             onClick={onNewMacro}
-            className="shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#ff5722] hover:bg-[#e94817] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
           >
-            Nueva macro
-          </Button>
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <span>Nueva macro</span>
+          </button>
         )}
       </div>
 
